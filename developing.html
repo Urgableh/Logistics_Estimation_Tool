@@ -85,9 +85,9 @@
         
         var uiArray = {"Track 1 ": [
                 document.getElementById("pac-input1").value, 
-                document.getElementById("pac-input2").value,
-                document.getElementById("pac-input3").value,
-                document.getElementById("pac-input4").value]
+                document.getElementById("pac-input2").value],
+            //    document.getElementById("pac-input3").value,
+            //    document.getElementById("pac-input4").value]
                     };
 
         requestArray = [];
@@ -163,6 +163,11 @@
         function directionResults(result, status) {
             if (status == google.maps.DirectionsStatus.OK) {
 
+                document.getElementById("routes").innerHTML += 
+                    "<br>" + document.getElementById("pac-input1").value + " -> " + document.getElementById("pac-input2").value + "<br>";
+
+                var count = ((document.getElementById("routes").innerHTML.match(/<br>/g)||[]).length)/2-1;
+                
                 // Create a unique DirectionsRenderer 'i'
                 renderArray[i] = new google.maps.DirectionsRenderer();
                 renderArray[i].setMap(map);
@@ -174,7 +179,7 @@
                     polylineOptions: {
                         strokeWeight: 4,
                         strokeOpacity: 0.8,
-                        strokeColor: colourArray[i]
+                        strokeColor: colourArray[count]
                     },
                     markerOptions:{
                         icon:{
@@ -224,7 +229,7 @@
         map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
         // Start the request making
-        generateRequests()
+        //generateRequests()
 
         var defaultBounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(-32,110),
@@ -264,6 +269,11 @@
             <input id="pac-input4" size="30" class="controls" type="text" placeholder="Start typing here"><br>
         </a>
         <a><br><button onclick="readRequests()">Calculate</button><br></a>
+        <br>
+        <body>
+            <br>Routes
+            <p id="routes"></p>
+        </body>
     </div>
     <div id="map-canvas"></div>
 </body>
