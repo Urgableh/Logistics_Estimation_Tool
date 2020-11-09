@@ -1,5 +1,5 @@
 <!-- Load the Google Maps aPI -->
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBV-QwkbjRjPoaIxsdQeVNZ8QZvdV8xYWw&libraries=places&sensor=false"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBV-QwkbjRjPoaIxsdQeVNZ8QZvdV8xYWw&libraries=places"></script>
 
 <!-- All of the script for multiple requests -->
 <script type="text/javascript">
@@ -82,8 +82,13 @@
     }
 
     function readRequests(){
-
-        var uiArray = {"Track 1 ": [document.getElementById("pac-input1"), document.getElementById("pac-input2")]};
+        
+        var uiArray = {"Track 1 ": [
+                document.getElementById("pac-input1").value, 
+                document.getElementById("pac-input2").value,
+                document.getElementById("pac-input3").value,
+                document.getElementById("pac-input4").value]
+                    };
 
         requestArray = [];
 
@@ -99,7 +104,7 @@
             // lastpoint is used to ensure that duplicate waypoints are stripped
             var lastpoint
 
-            data = jsonArray[route]
+            data = uiArray[route]
 
             limit = data.length
             for (var waypoint = 0; waypoint < limit; waypoint++) {
@@ -228,16 +233,18 @@
 
         var input1 = document.getElementById('pac-input1');
         var input2 = document.getElementById('pac-input2');
+        var input3 = document.getElementById('pac-input3');
+        var input4 = document.getElementById('pac-input4');
         //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
         var autocomplete = new google.maps.places.Autocomplete(input1, options)
         var autocomplete = new google.maps.places.Autocomplete(input2, options)
+        var autocomplete = new google.maps.places.Autocomplete(input3, options)
+        var autocomplete = new google.maps.places.Autocomplete(input4, options)
     }
 
     // Get the ball rolling and trigger our init() on 'load'
     google.maps.event.addDomListener(window, 'load', init);
-    document.getElementById("Calculate").addEventListener("click", readRequests);
-
 
 </script>
 
@@ -245,14 +252,18 @@
 <body>
     <div class="sidenav">
         <a><br>Address 1<br>
-            <input id="pac-input1" class="controls" type="text" placeholder="Start typing here"><br>
+            <input id="pac-input1" size="30" class="controls" type="text" placeholder="Start typing here"><br>
         </a>
         <a><br>Address 2<br>
-            <input id="pac-input2" class="controls" type="text" placeholder="Start typing here"><br>
+            <input id="pac-input2" size="30" class="controls" type="text" placeholder="Start typing here"><br>
         </a>
-        <a><br>Address 3<br></a>
-        <a><br>Address 4<br></a>
-        <a><br><button id="Calculate">Calculate</button><br></a>
+        <a><br>Address 3<br>
+            <input id="pac-input3" size="30" class="controls" type="text" placeholder="Start typing here"><br>
+        </a>
+        <a><br>Address 4<br>
+            <input id="pac-input4" size="30" class="controls" type="text" placeholder="Start typing here"><br>
+        </a>
+        <a><br><button onclick="readRequests()">Calculate</button><br></a>
     </div>
     <div id="map-canvas"></div>
 </body>
@@ -266,15 +277,15 @@
     
     .sidenav {
         height: 100%; /* Full-height: remove this if you want "auto" height */
-        width: 20%; /* Set the width of the sidebar */
+        width: 240px; /* Set the width of the sidebar */
         position: fixed; /* Fixed Sidebar (stay in place on scroll) */
         z-index: 1; /* Stay on top */
         top: 0; /* Stay at the top */
         left: 0;
         background-color: #111; /* Black */
         color: white;
-        opacity: 0.5;
+        opacity: 0.95;
         overflow-x: hidden; /* Disable horizontal scroll */
-        padding-top: 20px;
+        padding: 20px;
     }
 </style>
