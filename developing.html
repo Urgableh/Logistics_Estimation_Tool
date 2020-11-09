@@ -165,7 +165,7 @@
 
                 document.getElementById("routes").innerHTML += 
                     "<br>" + document.getElementById("pac-input1").value + " -> " + document.getElementById("pac-input2").value 
-                    + "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)'>X</button><br>";
+                    + "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)' style='float: right;'>X</button><br>";
 
                 var count = ((document.getElementById("routes").innerHTML.match(/<br>/g)||[]).length)/2-1;
                 
@@ -231,7 +231,7 @@
         var regex = new RegExp(`<br>((?!<br>).)*${x}.*?<br>`);
         console.log(x)
         console.log(regex.exec(document.getElementById("routes").outerHTML))
-        console.log(document.getElementById("routes").outerHTML.replace(regex, '>'))
+        console.log(document.getElementById("routes").outerHTML.replace(regex, ''))
         document.getElementById("routes").outerHTML = document.getElementById("routes").outerHTML.replace(regex, '');
         // delete all between <br> routeNumberj <br>
         //document.getElementById("routes").innerHTML = null;
