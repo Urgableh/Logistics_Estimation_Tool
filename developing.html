@@ -6,7 +6,7 @@
 
     // Initialise some variables
     var directionsService = new google.maps.DirectionsService();
-    var num, map, data;
+    var num, map, data, j=0;
     var requestArray = [], renderArray = [];
 
     // A JSON Array containing some people/routes and the destinations/stops
@@ -169,17 +169,17 @@
                 var count = ((document.getElementById("routes").innerHTML.match(/<br>/g)||[]).length)/2-1;
                 
                 // Create a unique DirectionsRenderer 'i'
-                renderArray[i] = new google.maps.DirectionsRenderer();
-                renderArray[i].setMap(map);
+                renderArray[j] = new google.maps.DirectionsRenderer();
+                renderArray[j].setMap(map);
 
                 // Some unique options from the colorArray so we can see the routes
-                renderArray[i].setOptions({
+                renderArray[j].setOptions({
                     preserveViewport: true,
                     suppressInfoWindows: true,
                     polylineOptions: {
                         strokeWeight: 4,
                         strokeOpacity: 0.8,
-                        strokeColor: colourArray[count]
+                        strokeColor: colourArray[count%16]
                     },
                     markerOptions:{
                         icon:{
@@ -191,7 +191,7 @@
                 });
 
                 // Use this new renderer with the result
-                renderArray[i].setDirections(result);
+                renderArray[j].setDirections(result);
                 // and start the next request
                 nextRequest();
             }
@@ -201,8 +201,9 @@
         function nextRequest(){
             // Increase the counter
             i++;
+            j++;
             // Make sure we are still waiting for a request
-            if(i >= requestArray.length){
+            if(j >= requestArray.length){
                 // No more to do
                 return;
             }
@@ -212,6 +213,15 @@
 
         // This request is just to kick start the whole process
         submitRequest();
+    }
+
+    function removeAll() {
+        var i = 0;
+        while (renderArray[i] != null) {
+            renderArray[i].setMap(null);
+            i++;
+        }
+        document.getElementById("routes").innerHTML = null;
     }
 
     // Called Onload
@@ -268,7 +278,9 @@
         <a><br>Address 4<br>
             <input id="pac-input4" size="30" class="controls" type="text" placeholder="Start typing here"><br>
         </a>
-        <a><br><button onclick="readRequests()">Calculate</button><br></a>
+        <a><br><button onclick="readRequests()">Calculate</button>
+            <button onclick="removeAll()">Clear</button>
+            <br></a>
         <br>
         <body>
             <br>Routes
