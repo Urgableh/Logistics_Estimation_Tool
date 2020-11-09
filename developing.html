@@ -164,7 +164,8 @@
             if (status == google.maps.DirectionsStatus.OK) {
 
                 document.getElementById("routes").innerHTML += 
-                    "<br>" + document.getElementById("pac-input1").value + " -> " + document.getElementById("pac-input2").value + "<br>";
+                    "<br>" + document.getElementById("pac-input1").value + " -> " + document.getElementById("pac-input2").value 
+                    + "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)'>X</button><br>";
 
                 var count = ((document.getElementById("routes").innerHTML.match(/<br>/g)||[]).length)/2-1;
                 
@@ -223,6 +224,19 @@
         }
         document.getElementById("routes").innerHTML = null;
     }
+    function removeRoute(x) {
+        var x1 = parseInt(x.match(/\d+/));
+        renderArray[x1].setMap(null);
+        x = x + '';
+        var regex = new RegExp(`<br>((?!<br>).)*${x}.*?<br>`);
+        console.log(x)
+        console.log(regex.exec(document.getElementById("routes").outerHTML))
+        console.log(document.getElementById("routes").outerHTML.replace(regex, '>'))
+        document.getElementById("routes").outerHTML = document.getElementById("routes").outerHTML.replace(regex, '');
+        // delete all between <br> routeNumberj <br>
+        //document.getElementById("routes").innerHTML = null;
+    }
+
 
     // Called Onload
     function init() {
@@ -283,8 +297,7 @@
             <br></a>
         <br>
         <body>
-            <br>Routes
-            <p id="routes"></p>
+            <br>Routes<p id="routes"></p>
         </body>
     </div>
     <div id="map-canvas"></div>
