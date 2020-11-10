@@ -85,11 +85,11 @@
         
         var uiArray = {"Track 1 ": [
                 document.getElementById("pac-input1").value, 
-                document.getElementById("pac-input2").value],
-            //    document.getElementById("pac-input3").value,
-            //    document.getElementById("pac-input4").value]
+                document.getElementById("pac-input2").value,
+                document.getElementById("pac-input3").value,
+                document.getElementById("pac-input4").value]
                     };
-
+        
         requestArray = [];
 
         for (var route in uiArray){
@@ -108,19 +108,21 @@
 
             limit = data.length
             for (var waypoint = 0; waypoint < limit; waypoint++) {
-                if (data[waypoint] === lastpoint){
-                    // Duplicate of of the last waypoint - don't bother
-                    continue;
+                if (data[waypoint] != "") {
+                    if (data[waypoint] === lastpoint){
+                        // Duplicate of of the last waypoint - don't bother
+                        continue;
+                    }
+
+                    // Prepare the lastpoint for the next loop
+                    lastpoint = data[waypoint]
+
+                    // Add this to waypoint to the array for making the request
+                    waypts.push({
+                        location: data[waypoint],
+                        stopover: true
+                    });
                 }
-
-                // Prepare the lastpoint for the next loop
-                lastpoint = data[waypoint]
-
-                // Add this to waypoint to the array for making the request
-                waypts.push({
-                    location: data[waypoint],
-                    stopover: true
-                });
             }
 
             // Grab the first waypoint for the 'start' location
@@ -163,9 +165,16 @@
         function directionResults(result, status) {
             if (status == google.maps.DirectionsStatus.OK) {
 
-                document.getElementById("routes").innerHTML += 
-                    "<br>" + document.getElementById("pac-input1").value + " -> " + document.getElementById("pac-input2").value 
-                    + "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)' style='float: right;'>X</button><br>";
+                var addresses = 0;
+                for(i=1; i<=4; i++) {
+                    if (document.getElementById(`pac-input${i}`).value != "")
+                        addresses ++;
+                }
+
+                document.getElementById("routes").innerHTML += "<br>" + document.getElementById("pac-input1").value
+                for(i=2; i<=addresses; i++)
+                    document.getElementById("routes").innerHTML += " &#8594 " + document.getElementById(`pac-input${i}`).value 
+                document.getElementById("routes").innerHTML += "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)' style='float: right;'>X</button><br>";
 
                 var count = ((document.getElementById("routes").innerHTML.match(/<br>/g)||[]).length)/2-1;
                 
@@ -229,9 +238,9 @@
         renderArray[x1].setMap(null);
         x = x + '';
         var regex = new RegExp(`<br>((?!<br>).)*${x}.*?<br>`);
-        console.log(x)
-        console.log(regex.exec(document.getElementById("routes").outerHTML))
-        console.log(document.getElementById("routes").outerHTML.replace(regex, ''))
+        //console.log(x)
+        //console.log(regex.exec(document.getElementById("routes").outerHTML))
+        //console.log(document.getElementById("routes").outerHTML.replace(regex, ''))
         document.getElementById("routes").outerHTML = document.getElementById("routes").outerHTML.replace(regex, '');
         // delete all between <br> routeNumberj <br>
         //document.getElementById("routes").innerHTML = null;
@@ -243,8 +252,8 @@
 
         // Some basic map setup (from the API docs)
         var mapOptions = {
-            center: new google.maps.LatLng(-32, 116),
-            zoom: 8,
+            center: new google.maps.LatLng(-32, 115.9),
+            zoom: 11,
             mapTypeControl: false,
             streetViewControl: false,
             mapTypeId: google.maps.MapTypeId.ROADMAP
