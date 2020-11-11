@@ -1,7 +1,7 @@
     // Initialise some variables
     var directionsService = new google.maps.DirectionsService();
     var num, map, data, j=0;
-    var requestArray = [], renderArray = [], uiArray = [];
+    var requestArray = [], renderArray = [];
 
     // 16 Standard Colours for navigation polylines
     var colourArray = ['navy', 'grey', 'fuchsia', 'black', 'white', 'lime', 'maroon', 'purple', 'aqua', 'red', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
