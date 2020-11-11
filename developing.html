@@ -177,11 +177,21 @@
                 for(i=0; i<addresses-1; i++) {
                     timeTaken += result.routes[0].legs[i].duration.value;
                 }
+                
+                var departTime = document.getElementById("departTime").value.split(":");
+                var departHour = parseInt(departTime[0], 10);
+                var departMin = parseInt(departTime[1], 10);
+                var arrivalTime = departHour*60*60 + departMin*60 + timeTaken;
+                var extra0 = "0", extra00 = "0";
+                if (Math.floor(arrivalTime/60/60)%24 > 10) extra0 = "";
+                if (Math.floor(arrivalTime%3600/60) > 10) extra00 = "";
+                var arrivalClock = extra0 + Math.floor(arrivalTime/60/60)%24 + ":" + extra00 + Math.floor(arrivalTime%3600/60)
 
                 document.getElementById("routes").innerHTML += "<br>" + document.getElementById("pac-input1").value
                 for(i=2; i<=addresses; i++)
                     document.getElementById("routes").innerHTML += " &#8594 " + document.getElementById(`pac-input${i}`).value 
                 document.getElementById("routes").innerHTML += " (" + Math.floor(timeTaken/60/60) + "Hrs " + Math.floor((timeTaken%3600)/60) + "Mins) "; //+ Math.floor(timeTaken%60) + "Secs) ";
+                document.getElementById("routes").innerHTML += " <b>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock + "]";
                 document.getElementById("routes").innerHTML += "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)' style='float: right;'>X</button><br>";
 
                 var count = ((document.getElementById("routes").innerHTML.match(/<br>/g)||[]).length)/2-1;
@@ -291,6 +301,8 @@
         var autocomplete = new google.maps.places.Autocomplete(input2, options)
         var autocomplete = new google.maps.places.Autocomplete(input3, options)
         var autocomplete = new google.maps.places.Autocomplete(input4, options)
+
+        document.getElementById("departTime").defaultValue = "08:00";
     }
 
     // Get the ball rolling and trigger our init() on 'load'
@@ -317,6 +329,7 @@
             <button onclick="removeAll()">Clear</button>
             <br></a>
         <br>
+        <a>Departure Time: <input type="time" id="departTime"><br><br></a>
         <body>
             <br>Routes<p id="routes"></p>
         </body>
