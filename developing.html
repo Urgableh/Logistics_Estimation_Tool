@@ -1,6 +1,11 @@
+<!-- IDEA: Sliding bar to show progress from 0 - 100% of journey -->
+
+
 <!-- Load the Google Maps aPI -->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBV-QwkbjRjPoaIxsdQeVNZ8QZvdV8xYWw&libraries=places"></script>
 
+<!-- jsDelivr :: Sortable :: Latest (https://www.jsdelivr.com/package/npm/sortablejs) -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <!-- All of the script for multiple requests -->
 <script src="main.js"></script>
@@ -8,25 +13,48 @@
 <!-- Somewhere in the DOM for the map to be rendered -->
 <body>
     <div class="sidenav">
-        <a><br>Address 1<br>
-            <input id="pac-input1" size="30" class="controls" type="text" placeholder="Start typing here"><br>
-        </a>
-        <a><br>Address 2<br>
-            <input id="pac-input2" size="30" class="controls" type="text" placeholder="Start typing here"><br>
-        </a>
-        <a><br>Address 3<br>
-            <input id="pac-input3" size="30" class="controls" type="text" placeholder="Start typing here"><br>
-        </a>
-        <a><br>Address 4<br>
-            <input id="pac-input4" size="30" class="controls" type="text" placeholder="Start typing here"><br>
-        </a>
+        <div class="container">
+            <div class="row">
+              <div class="col-sm-9 col-xl-10 order-2 order-sm-1 mt-3">
+                <div id="sortablelist" class="list-group mb-4 mt-3" data-id="0">
+                  <div class="list-group-item d-flex align-items-center justify-content-between" data-id="1">
+                    <div>
+                      <p class="mb-0 d-inline-flex align-items-center">
+                        Address<br>
+                        <input id="pac-input1" size="30" class="controls" type="text" placeholder="Start typing here to add destination"><br></p>
+                    </div>
+                  </div>
+                  <div class="list-group-item d-flex align-items-center justify-content-between" data-id="2">
+                    <div>
+                      <p class="mb-0 d-inline-flex align-items-center">
+                        Address<br>
+                        <input id="pac-input2" size="30" class="controls" type="text" placeholder="Start typing here to add destination"><br></p>
+                    </div>
+                  </div>
+                  <div class="list-group-item d-flex align-items-center justify-content-between" data-id="3">
+                    <div>
+                      <p class="mb-0 d-inline-flex align-items-center">
+                        Address<br>
+                        <input id="pac-input3" size="30" class="controls" type="text" placeholder="Start typing here to add destination"><br></p>
+                    </div>
+                  </div>
+                  <div class="list-group-item d-flex align-items-center justify-content-between" data-id="4">
+                    <div>
+                      <p class="mb-0 d-inline-flex align-items-center">
+                        Address<br>
+                        <input id="pac-input4" size="30" class="controls" type="text" placeholder="Start typing here to add destination"><br></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         <a><br><button onclick="readRequests()">Calculate</button>
-            <button onclick="removeAll()">Clear All Routes</button>
-            <br></a>
+        <button onclick="removeAll()">Clear All Routes</button>
+        <br></a>
         <br>
         <a>Departure Time: <input type="time" id="departTime"><br><br></a>
-        <body>
-            <br>Routes<p id="routes"></p>
+        <body>---------------------------------------------<br>Routes<p id="routes"></p>
         </body>
     </div>
     <div id="map-canvas"></div>

@@ -24,3 +24,11 @@
 .list-group .list-group-item:hover {
     background-color: #111;
 }
+
+.controls {
+    text-indent: 5px;
+}
+
+.mb-0 {
+    text-indent: 5px;
+}
