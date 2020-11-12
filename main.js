@@ -192,7 +192,7 @@
                 document.getElementById("routes").innerHTML += "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button><br>";
 
-                var count = ((document.getElementById("routes").innerHTML.match(/pac-input/g)||[]).length);
+                var count = ((document.getElementById("routes").innerHTML.match(/routeNumber/g)||[]).length);
                 console.log(count);
                 // Create a unique DirectionsRenderer 'i'
                 renderArray[j] = new google.maps.DirectionsRenderer();
