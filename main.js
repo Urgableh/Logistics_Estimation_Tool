@@ -139,7 +139,7 @@
             // and save it in our requestArray
             requestArray.push({"route": route, "request": request});
         }
-
+        
         processRequests();
         
     }
@@ -350,9 +350,9 @@
     //////////////////////////////////
 
     var autoDriveSteps = new Array();
-    var speedFactor = 10; // 10x faster animated drive
+    var speedFactor = 25; // 10x faster animated drive
 
-    function setAnimatedRoute(origin, destination, map) {
+    function setAnimatedRoute(origin, destination, waypts, map) {
         // init routing services
         var directionsRenderer = new google.maps.DirectionsRenderer({
             map: map
@@ -362,6 +362,7 @@
         directionsService.route({
                 origin: origin,
                 destination: destination,
+                waypoints: waypts,
                 travelMode: google.maps.TravelMode.DRIVING
             },
             function(response, status) {
@@ -371,22 +372,26 @@
 
                     // calculate positions for the animation steps
                     // the result is an array of LatLng, stored in autoDriveSteps
-                    autoDriveSteps = new Array();
-                    var remainingSeconds = 0;
-                    var leg = response.routes[0].legs[0]; // supporting single route, single legs currently
-                    leg.steps.forEach(function(step) {
-                        var stepSeconds = step.duration.value;
-                        var nextStopSeconds = speedFactor - remainingSeconds;
-                        while (nextStopSeconds <= stepSeconds) {
-                            var nextStopLatLng = getPointBetween(step.start_location, step.end_location, nextStopSeconds / stepSeconds);
-                            autoDriveSteps.push(nextStopLatLng);
-                            nextStopSeconds += speedFactor;
+                    autoDriveSteps = [];
+                    for (i=0 ; i<response.routes[0].legs.length ; i++) {
+                        autoDriveSteps[i] = new Array()
+                        var remainingSeconds = 0;
+                        var leg = response.routes[0].legs[i]; // supporting single route, single legs currently
+                        leg.steps.forEach(function(step) {
+                            var stepSeconds = step.duration.value;
+                            var nextStopSeconds = speedFactor - remainingSeconds;
+                            while (nextStopSeconds <= stepSeconds) {
+                                var nextStopLatLng = getPointBetween(step.start_location, step.end_location, nextStopSeconds / stepSeconds);
+                                autoDriveSteps[i].push(nextStopLatLng);
+                                nextStopSeconds += speedFactor;
+                            }
+                            remainingSeconds = stepSeconds + speedFactor - nextStopSeconds;
+                        });
+                        if (remainingSeconds > 0) {
+                            autoDriveSteps[i].push(leg.end_location);
                         }
-                        remainingSeconds = stepSeconds + speedFactor - nextStopSeconds;
-                    });
-                    if (remainingSeconds > 0) {
-                        autoDriveSteps.push(leg.end_location);
                     }
+                    
                 } else {
                     window.alert('Directions request failed due to ' + status);
                 }
@@ -400,15 +405,21 @@
 
     // start the route simulation   
     function startRouteAnimation(marker) {
+        var i = 0;
         var autoDriveTimer = setInterval(function () {
                 // stop the timer if the route is finished
-                if (autoDriveSteps.length === 0) {
-                    clearInterval(autoDriveTimer);
+                if (autoDriveSteps[i].length === 0) {
+                    if (i == autoDriveSteps.length-1)
+                        clearInterval(autoDriveTimer);
+                    else
+                        i++;
+                        marker.setPosition(autoDriveSteps[i][0]);
+                        autoDriveSteps[i].shift();
                 } else {
                     // move marker to the next position (always the first in the array)
-                    marker.setPosition(autoDriveSteps[0]);
+                    marker.setPosition(autoDriveSteps[i][0]);
                     // remove the processed position
-                    autoDriveSteps.shift();
+                    autoDriveSteps[i].shift();
                 }
             },
             1000);
@@ -419,7 +430,16 @@
     
 // start simulation on button click...
     function test(){
+        var waypts = [];
+        waypts.push({
+            location: "Bull Creek",
+            stopover: true,
+          });
+        waypts.push({
+            location: "Rossmoyne",
+            stopover: true,
+        });
         var agentMarker = new google.maps.Marker({map});
-        setAnimatedRoute("Canning Vale", "Willetton", map);
+        setAnimatedRoute("Booragoon", "Willetton", waypts, map);
         startRouteAnimation(agentMarker);
 };
