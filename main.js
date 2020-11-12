@@ -192,7 +192,8 @@
                 document.getElementById("routes").innerHTML += "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button><br>";
 
-                var count = ((document.getElementById("routes").innerHTML.match(/<br>/g)||[]).length-1)/2;
+                var count = ((document.getElementById("routes").innerHTML.match(/pac-input/g)||[]).length);
+                console.log(count);
                 // Create a unique DirectionsRenderer 'i'
                 renderArray[j] = new google.maps.DirectionsRenderer();
                 renderArray[j].setMap(map);
@@ -253,7 +254,7 @@
             renderArray[i].setMap(null);
             i++;
         }
-        document.getElementById("routes").innerHTML = null;
+        document.getElementById("routes").innerHTML = "Routes<br>";
         resetInputs();
     }
     function removeRoute(x) {
@@ -281,13 +282,13 @@
         document.getElementById("routes").outerHTML = document.getElementById("routes").outerHTML.replace(regex1, '');
         resetInputs();
         var inputCount = destinations.length;
-        for (i=0; i<=inputCount-2; i++) {
+        for (i=2; i<=inputCount; i++) {
             document.getElementById("sortablelist").innerHTML +=
-            `<div class="list-group-item d-flex align-items-center justify-content-between" data-id="${inputCount+1}">
+            `<div class="list-group-item d-flex align-items-center justify-content-between" data-id="${i+1}">
                 <div>
                 <p class="mb-0 d-inline-flex align-items-center">
                     Address<br>
-                    <input id="pac-input${inputCount+1}" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination"><br></p>
+                    <input id="pac-input${i+1}" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination"><br></p>
                 </div>
             </div>`
         }
@@ -298,7 +299,7 @@
         var options = {bounds: defaultBounds};
         var inputX = {};
 
-        for (i=0; i<=inputCount; i++) {
+        for (i=2; i<=inputCount; i++) {
             inputX[i] = document.getElementById(`pac-input${order[i]}`);
             var autocomplete = new google.maps.places.Autocomplete(inputX[i], options)
         }
