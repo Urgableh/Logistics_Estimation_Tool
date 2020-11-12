@@ -191,8 +191,7 @@
                 document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock + "]</b></u>";
                 document.getElementById("routes").innerHTML += "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)' style='float: right;'>X</button><br>";
 
-                var count = ((document.getElementById("routes").innerHTML.match(/<br>/g)||[]).length)/2-1;
-                
+                var count = ((document.getElementById("routes").innerHTML.match(/<br>/g)||[]).length-1)/2;
                 // Create a unique DirectionsRenderer 'i'
                 renderArray[j] = new google.maps.DirectionsRenderer();
                 renderArray[j].setMap(map);
