@@ -6,6 +6,36 @@
     // 16 Standard Colours for navigation polylines
     var colourArray = ['navy', 'grey', 'fuchsia', 'black', 'white', 'lime', 'maroon', 'purple', 'aqua', 'red', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
 
+    function resetInputs(){
+        document.getElementById("sortablelist").innerHTML =
+        `<div class="list-group-item d-flex align-items-center justify-content-between" data-id="1">
+        <div>
+        <p class="mb-0 d-inline-flex align-items-center">
+            Address<br>
+            <input id="pac-input1" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination"><br></p>
+        </div>
+        </div>
+        <div class="list-group-item d-flex align-items-center justify-content-between" data-id="2">
+        <div>
+        <p class="mb-0 d-inline-flex align-items-center">
+            Address<br>
+            <input id="pac-input2" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination"><br></p>
+        </div>
+        </div>`
+
+        order = sortable.toArray();
+        var defaultBounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(-32,110),
+            new google.maps.LatLng(-34,130));
+        var options = {bounds: defaultBounds};
+        var inputX = {};
+
+        for (i=0; i<=1; i++) {
+            inputX[i] = document.getElementById(`pac-input${order[i]}`);
+            var autocomplete = new google.maps.places.Autocomplete(inputX[i], options)
+        }
+    }
+    
     function addInputs(){
         var order = sortable.toArray();
         var inputCount = document.getElementById("sortablelist").innerHTML.split("pac-input").length - 1;
@@ -111,6 +141,7 @@
         }
 
         processRequests();
+        
     }
 
     function processRequests(){
@@ -190,6 +221,7 @@
 
                 // Use this new renderer with the result
                 renderArray[j].setDirections(result);
+                resetInputs();
                 // and start the next request
                 nextRequest();
             }
@@ -207,10 +239,12 @@
             }
             // Submit another request
             submitRequest();
+            
         }
 
         // This request is just to kick start the whole process
         submitRequest();
+        
     }
 
     function removeAll() {
@@ -220,6 +254,7 @@
             i++;
         }
         document.getElementById("routes").innerHTML = null;
+        resetInputs();
     }
     function removeRoute(x) {
         var x1 = parseInt(x.match(/\d+/));
