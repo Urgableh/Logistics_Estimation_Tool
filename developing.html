@@ -1,5 +1,11 @@
-<!-- IDEA: Sliding bar to show progress from 0 - 100% of journey -->
-
+<!-- 
+    IDEA: Sliding bar to show progress from 0 - 100% of journey 
+    Start with 2 addresses, 
+    Iteratively add more addresses if there are no extra blank addresses (onchange event)
+    After hitting Calculate, remove all inputs and revert back to 2 addresses
+    Add an edit button to the route to auto plug back into the inputs
+    Have edit symbol and exit symbol imported pngs
+-->
 
 <!-- Load the Google Maps aPI -->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBV-QwkbjRjPoaIxsdQeVNZ8QZvdV8xYWw&libraries=places"></script>
@@ -21,28 +27,14 @@
                     <div>
                       <p class="mb-0 d-inline-flex align-items-center">
                         Address<br>
-                        <input id="pac-input1" size="30" class="controls" type="text" placeholder="Start typing here to add destination"><br></p>
+                        <input id="pac-input1" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination"><br></p>
                     </div>
                   </div>
                   <div class="list-group-item d-flex align-items-center justify-content-between" data-id="2">
                     <div>
                       <p class="mb-0 d-inline-flex align-items-center">
                         Address<br>
-                        <input id="pac-input2" size="30" class="controls" type="text" placeholder="Start typing here to add destination"><br></p>
-                    </div>
-                  </div>
-                  <div class="list-group-item d-flex align-items-center justify-content-between" data-id="3">
-                    <div>
-                      <p class="mb-0 d-inline-flex align-items-center">
-                        Address<br>
-                        <input id="pac-input3" size="30" class="controls" type="text" placeholder="Start typing here to add destination"><br></p>
-                    </div>
-                  </div>
-                  <div class="list-group-item d-flex align-items-center justify-content-between" data-id="4">
-                    <div>
-                      <p class="mb-0 d-inline-flex align-items-center">
-                        Address<br>
-                        <input id="pac-input4" size="30" class="controls" type="text" placeholder="Start typing here to add destination"><br></p>
+                        <input id="pac-input2" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination"><br></p>
                     </div>
                   </div>
                 </div>

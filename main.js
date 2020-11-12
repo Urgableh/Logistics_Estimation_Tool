@@ -6,16 +6,51 @@
     // 16 Standard Colours for navigation polylines
     var colourArray = ['navy', 'grey', 'fuchsia', 'black', 'white', 'lime', 'maroon', 'purple', 'aqua', 'red', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
 
+    function addInputs(){
+        var order = sortable.toArray();
+        var inputCount = document.getElementById("sortablelist").innerHTML.split("pac-input").length - 1;
+        var filled = true; 
+        var currentText = {};
+        for (i=0; i<inputCount; i++)
+            if (document.getElementById(`pac-input${order[i]}`).value == "")
+                filled = false;
+            else
+                currentText[i] = document.getElementById(`pac-input${order[i]}`).value;
+
+        if (filled) {
+            document.getElementById("sortablelist").innerHTML +=
+            `<div class="list-group-item d-flex align-items-center justify-content-between" data-id="${inputCount+1}">
+                <div>
+                <p class="mb-0 d-inline-flex align-items-center">
+                    Address<br>
+                    <input id="pac-input${inputCount+1}" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination"><br></p>
+                </div>
+            </div>`
+            order = sortable.toArray();
+            var defaultBounds = new google.maps.LatLngBounds(
+                new google.maps.LatLng(-32,110),
+                new google.maps.LatLng(-34,130));
+            var options = {bounds: defaultBounds};
+            var inputX = {};
+
+            for (i=0; i<=inputCount; i++) {
+                document.getElementById(`pac-input${order[i]}`).value = currentText[i];
+                if (document.getElementById(`pac-input${order[i]}`).value == "undefined")
+                    document.getElementById(`pac-input${order[i]}`).value = "";
+                inputX[i] = document.getElementById(`pac-input${order[i]}`);
+                var autocomplete = new google.maps.places.Autocomplete(inputX[i], options)
+            }
+        }
+    }
+
     function readRequests(){
         
         var order = sortable.toArray();
         
-        var uiArray = {"Track 1 ": [
-                document.getElementById(`pac-input${order[0]}`).value, 
-                document.getElementById(`pac-input${order[1]}`).value,
-                document.getElementById(`pac-input${order[2]}`).value,
-                document.getElementById(`pac-input${order[3]}`).value]
-                    };
+        var inputCount = document.getElementById("sortablelist").innerHTML.split("pac-input").length - 1;
+        var uiArray = {"Track 1 " : []};
+        for (i=0; i<inputCount; i++)
+            uiArray["Track 1 "][i] = document.getElementById(`pac-input${order[i]}`).value, 
         
         requestArray = [];
 
@@ -219,14 +254,10 @@
 
         var input1 = document.getElementById('pac-input1');
         var input2 = document.getElementById('pac-input2');
-        var input3 = document.getElementById('pac-input3');
-        var input4 = document.getElementById('pac-input4');
         //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
         var autocomplete = new google.maps.places.Autocomplete(input1, options)
         var autocomplete = new google.maps.places.Autocomplete(input2, options)
-        var autocomplete = new google.maps.places.Autocomplete(input3, options)
-        var autocomplete = new google.maps.places.Autocomplete(input4, options)
 
         document.getElementById("departTime").defaultValue = "08:00";
 
