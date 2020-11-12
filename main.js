@@ -128,12 +128,14 @@
             if (status == google.maps.DirectionsStatus.OK) {
 
                 var order = sortable.toArray();
+                var inputCount = document.getElementById("sortablelist").innerHTML.split("pac-input").length - 1;
 
                 console.log(result)
 
                 var addresses = 0;
                 var timeTaken = 0;
-                for(i=1; i<=4; i++) {
+                
+                for(i=1; i<=inputCount; i++) {
                     if (document.getElementById(`pac-input${i}`).value != ""){
                         addresses ++;
                     }
