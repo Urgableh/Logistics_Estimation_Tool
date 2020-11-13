@@ -435,6 +435,8 @@
         startRouteAnimation(agentMarker[x1],x1);
         document.getElementById(x).outerHTML = `<button id="routeStop${x1}" onclick="stopRoute(this.id,j)" 
             style="float: right;"><img src="Stop.png" width="20" height="20"></button>`;
+        document.getElementById(`routeEdit${x1}`).disabled = true;
+        document.getElementById(`routeRemove${x1}`).disabled = true;
     };
 
     function stopRoute(x,j){
@@ -442,7 +444,9 @@
         clearInterval(autoDriveTimer[x1]);
         agentMarker[x1].setMap(null);
         document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="startRoute(this.id,j)" 
-        style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
+            style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
+        document.getElementById(`routeEdit${x1}`).disabled = false;
+        document.getElementById(`routeRemove${x1}`).disabled = false;
     }
 
 
