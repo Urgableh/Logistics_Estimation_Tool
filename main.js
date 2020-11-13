@@ -188,12 +188,12 @@
                 for(i=2; i<=addresses; i++)
                     document.getElementById("routes").innerHTML += " =&gt; " + document.getElementById(`pac-input${order[i-1]}`).value 
                 document.getElementById("routes").innerHTML += " (" + Math.floor(timeTaken/60/60) + "Hrs " + Math.floor((timeTaken%3600)/60) + "Mins) "; //+ Math.floor(timeTaken%60) + "Secs) ";
-                document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock + "]</b></u>";
+                document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock + "]</b></u><pre>\n</pre>";
                 document.getElementById("routes").innerHTML += "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
-                document.getElementById("routes").innerHTML += "<button id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button><br>";
+                document.getElementById("routes").innerHTML += "<button id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button>";
+                document.getElementById("routes").innerHTML += "<button id='routeStart" + j + `' onclick='startRoute(this.id,${j})' style='float: right;'><img src='Start.png' width='20' height='20'/></button><br>`;
 
                 var count = ((document.getElementById("routes").innerHTML.match(/routeNumber/g)||[]).length);
-                console.log(count);
                 // Create a unique DirectionsRenderer 'i'
                 renderArray[j] = new google.maps.DirectionsRenderer();
                 renderArray[j].setMap(map);
