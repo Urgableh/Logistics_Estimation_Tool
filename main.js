@@ -5,7 +5,7 @@
     var waitAtWaypoint = 10; // seconds
 
     // 16 Standard Colours for navigation polylines
-    var colourArray = ['navy', 'red', 'fuchsia', 'black', 'lime', 'maroon', 'purple', 'aqua', 'grey', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal', 'white'];
+    var colourArray = ['navy', 'red', 'fuchsia', 'black', 'orange', 'maroon', 'purple', 'aqua', 'coral', 'green', 'indigo', 'olive', 'blue', 'plum', 'teal', 'brown'];
 
     // Get the ball rolling and trigger our init() on 'load'
     google.maps.event.addDomListener(window, 'load', init);
@@ -206,7 +206,6 @@
                 
                 document.getElementById(`routeStop${j}`).disabled = true;
 
-                var count = ((document.getElementById("routes").innerHTML.match(/routeRemove/g)||[]).length);
                 // Create a unique DirectionsRenderer 'i'
                 renderArray[j] = new google.maps.DirectionsRenderer();
                 renderArray[j].setMap(map);
@@ -218,13 +217,13 @@
                     polylineOptions: {
                         strokeWeight: 4,
                         strokeOpacity: 0.8,
-                        strokeColor: colourArray[count%16]
+                        strokeColor: colourArray[j%16]
                     },
                     markerOptions:{
                         icon:{
                             path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
                             scale: 3,
-                            strokeColor: colourArray[count%16]
+                            strokeColor: colourArray[j%16]
                         },
                         //label:{ 
                             //text: result.routes[0].legs[j].duration.text
