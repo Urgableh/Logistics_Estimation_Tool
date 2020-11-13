@@ -146,12 +146,9 @@
 
     function processRequests(){
 
-        // Counter to track request submission and process one at a time;
-        var i = 0;
-
         // Used to submit the request 'i'
         function submitRequest(){
-            directionsService.route(requestArray[i].request, directionResults);
+            directionsService.route(requestArray[0].request, directionResults);
         }
 
         // Used as callback for the above request for current 'i'
@@ -224,23 +221,9 @@
                 renderArray[j].setDirections(result);
                 resetInputs();
                 // and start the next request
-                nextRequest();
+                j++;
             }
 
-        }
-
-        function nextRequest(){
-            // Increase the counter
-            i++;
-            j++;
-            // Make sure we are still waiting for a request
-            if(j >= requestArray.length){
-                // No more to do
-                return;
-            }
-            // Submit another request
-            submitRequest();
-            
         }
 
         // This request is just to kick start the whole process
@@ -265,9 +248,10 @@
         //console.log(x)
         //console.log(regex.exec(document.getElementById("routes").outerHTML))
         //console.log(document.getElementById("routes").outerHTML.replace(regex, ''))
-        document.getElementById("routes").outerHTML = document.getElementById("routes").outerHTML.replace(regex, '');
+        document.getElementById("routes").innerHTML = document.getElementById("routes").innerHTML.replace(regex, '');
         // delete all between <br> routeNumberj <br>
         //document.getElementById("routes").innerHTML = null;
+        console.log(autoDriveSteps)
     }
 
     function editRoute(x) {
@@ -279,7 +263,7 @@
         var routeStrings = regex2.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
         var destinations = routeStrings.split(" =&gt; ");
         //console.log(destinations)
-        document.getElementById("routes").outerHTML = document.getElementById("routes").outerHTML.replace(regex1, '');
+        document.getElementById("routes").innerHTML = document.getElementById("routes").innerHTML.replace(regex1, '');
         resetInputs();
         var inputCount = destinations.length;
         for (i=2; i<=inputCount; i++) {
@@ -368,7 +352,7 @@
             },
             function(response, status) {
                 if (status == google.maps.DirectionsStatus.OK) {
-                    // display the route
+                    // display the route - this will zoom into the map too
                     //animationRenderer[j].setDirections(response);
 
                     // calculate positions for the animation steps
@@ -404,8 +388,8 @@
         return new google.maps.LatLng(a.lat() + (b.lat() - a.lat()) * ratio, a.lng() + (b.lng() - a.lng()) * ratio);
     }
 
-    var autoDriveTimer = []
-    var agentMarker = []
+    var autoDriveTimer = [];
+    var agentMarker = [];
 
     // start the route simulation   
     function startRouteAnimation(marker,j) {
@@ -446,7 +430,19 @@
                 stopover: true,
             });
         }
-        agentMarker[j] = new google.maps.Marker({map});
-        setAnimatedRoute(start, finish, waypts, map, j);
-        startRouteAnimation(agentMarker[j],j);
-};
+        agentMarker[x1] = new google.maps.Marker({map});
+        setAnimatedRoute(start, finish, waypts, map, x1);
+        startRouteAnimation(agentMarker[x1],x1);
+        document.getElementById(x).outerHTML = `<button id="routeStop${x1}" onclick="stopRoute(this.id,j)" 
+            style="float: right;"><img src="Stop.png" width="20" height="20"></button>`;
+    };
+
+    function stopRoute(x,j){
+        var x1 = parseInt(x.match(/\d+/));
+        clearInterval(autoDriveTimer[x1]);
+        agentMarker[x1].setMap(null);
+        document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="startRoute(this.id,j)" 
+        style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
+    }
+
+
