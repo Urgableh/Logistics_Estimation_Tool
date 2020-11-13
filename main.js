@@ -186,11 +186,11 @@
                     document.getElementById("routes").innerHTML += " =&gt; " + document.getElementById(`pac-input${order[i-1]}`).value 
                 document.getElementById("routes").innerHTML += " (" + Math.floor(timeTaken/60/60) + "Hrs " + Math.floor((timeTaken%3600)/60) + "Mins) "; //+ Math.floor(timeTaken%60) + "Secs) ";
                 document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock + "]</b></u><pre>\n</pre>";
-                document.getElementById("routes").innerHTML += "<button id='routeNumber" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
+                document.getElementById("routes").innerHTML += "<button id='routeRemove" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeStart" + j + `' onclick='startRoute(this.id,${j})' style='float: right;'><img src='Start.png' width='20' height='20'/></button><br>`;
 
-                var count = ((document.getElementById("routes").innerHTML.match(/routeNumber/g)||[]).length);
+                var count = ((document.getElementById("routes").innerHTML.match(/routeRemove/g)||[]).length);
                 // Create a unique DirectionsRenderer 'i'
                 renderArray[j] = new google.maps.DirectionsRenderer();
                 renderArray[j].setMap(map);
@@ -249,7 +249,7 @@
         //console.log(regex.exec(document.getElementById("routes").outerHTML))
         //console.log(document.getElementById("routes").outerHTML.replace(regex, ''))
         document.getElementById("routes").innerHTML = document.getElementById("routes").innerHTML.replace(regex, '');
-        // delete all between <br> routeNumberj <br>
+        // delete all between <br> routeRemovej <br>
         //document.getElementById("routes").innerHTML = null;
         console.log(autoDriveSteps)
     }
