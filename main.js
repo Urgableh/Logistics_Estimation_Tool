@@ -2,9 +2,10 @@
     var directionsService = new google.maps.DirectionsService();
     var num, map, data, j=0;
     var requestArray = [], renderArray = [];
+    var waitAtWaypoint = 10; // seconds
 
     // 16 Standard Colours for navigation polylines
-    var colourArray = ['navy', 'grey', 'fuchsia', 'black', 'white', 'lime', 'maroon', 'purple', 'aqua', 'red', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
+    var colourArray = ['navy', 'red', 'fuchsia', 'black', 'lime', 'maroon', 'purple', 'aqua', 'grey', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal', 'white'];
 
     function resetInputs(){
         document.getElementById("sortablelist").innerHTML =
@@ -158,7 +159,7 @@
                 var order = sortable.toArray();
                 var inputCount = document.getElementById("sortablelist").innerHTML.split("pac-input").length - 1;
 
-                console.log(result)
+                //console.log(result)
 
                 var addresses = 0;
                 var timeTaken = 0;
@@ -254,7 +255,7 @@
         document.getElementById("routes").innerHTML = document.getElementById("routes").innerHTML.replace(regex, '');
         // delete all between <br> routeRemovej <br>
         //document.getElementById("routes").innerHTML = null;
-        console.log(autoDriveSteps)
+        //console.log(autoDriveSteps)
     }
 
     function editRoute(x) {
@@ -378,7 +379,9 @@
                         if (remainingSeconds > 0) {
                             autoDriveSteps[j].push(leg.end_location);
                         }
+                        autoDriveSteps[j].push("Waypoint!");
                     }
+                    console.log(autoDriveSteps)
                     
                 } else {
                     window.alert('Directions request failed due to ' + status);
@@ -404,7 +407,12 @@
                     // remove path and marker
                     //animationRenderer[j].setMap(null);
                     //agentMarker[j].setMap(null);
-                } else {
+                } else if (autoDriveSteps[j][0] ==("Waypoint!")){
+                    autoDriveSteps[j].shift();
+                    clearInterval(autoDriveTimer[j]);
+                    stopAtWayPoint(marker,j);
+                }
+                else  {
                     // move marker to the next position (always the first in the array)
                     marker.setPosition(autoDriveSteps[j][0]);
                     // remove the processed position
@@ -413,6 +421,10 @@
             },
             1000);
         return autoDriveTimer[j];
+    }
+
+    function stopAtWayPoint(marker,j){
+        setTimeout(startRouteAnimation(marker,j), waitAtWaypoint*1000);
     }
 
 // start simulation on button click...
