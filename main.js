@@ -188,7 +188,10 @@
                 document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock + "]</b></u><pre>\n</pre>";
                 document.getElementById("routes").innerHTML += "<button id='routeRemove" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button>";
+                document.getElementById("routes").innerHTML += "<button id='routeStop" + j + "' onclick='stopRoute(this.id)' style='float: right;'><img src='Stop.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeStart" + j + `' onclick='startRoute(this.id,${j})' style='float: right;'><img src='Start.png' width='20' height='20'/></button><br>`;
+                
+                document.getElementById(`routeStop${j}`).disabled = true;
 
                 var count = ((document.getElementById("routes").innerHTML.match(/routeRemove/g)||[]).length);
                 // Create a unique DirectionsRenderer 'i'
@@ -334,7 +337,7 @@
     //////////////////////////////////
 
     var autoDriveSteps = [];
-    var speedFactor = 25; // 10x faster animated drive
+    var speedFactor = 25; // 25x faster animated drive
     var animationRenderer = [];
 
     function setAnimatedRoute(origin, destination, waypts, map, j) {
@@ -390,12 +393,13 @@
 
     var autoDriveTimer = [];
     var agentMarker = [];
+    var paused = [];
 
     // start the route simulation   
     function startRouteAnimation(marker,j) {
         autoDriveTimer[j] = setInterval(function () {
                 // stop the timer if the route is finished
-                if (autoDriveSteps[j].length === 0) {
+                if (autoDriveSteps[j].length === 0 || paused[j]) {
                     clearInterval(autoDriveTimer[j]);
                     // remove path and marker
                     //animationRenderer[j].setMap(null);
@@ -432,9 +436,11 @@
         }
         agentMarker[x1] = new google.maps.Marker({map});
         setAnimatedRoute(start, finish, waypts, map, x1);
+        paused[x1] = false;
         startRouteAnimation(agentMarker[x1],x1);
-        document.getElementById(x).outerHTML = `<button id="routeStop${x1}" onclick="stopRoute(this.id,j)" 
-            style="float: right;"><img src="Stop.png" width="20" height="20"></button>`;
+        document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="pauseRoute(this.id,j)" 
+            style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
+        document.getElementById(`routeStop${x1}`).disabled = false;
         document.getElementById(`routeEdit${x1}`).disabled = true;
         document.getElementById(`routeRemove${x1}`).disabled = true;
     };
@@ -443,10 +449,24 @@
         var x1 = parseInt(x.match(/\d+/));
         clearInterval(autoDriveTimer[x1]);
         agentMarker[x1].setMap(null);
-        document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="startRoute(this.id,j)" 
-            style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
+        document.getElementById(`routeStart${x1}`).outerHTML = `<button id="routeStart${x1}" onclick="startRoute(this.id,j)" 
+        style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
+        document.getElementById(x).disabled = true;
         document.getElementById(`routeEdit${x1}`).disabled = false;
         document.getElementById(`routeRemove${x1}`).disabled = false;
     }
 
+    function pauseRoute(x,j){
+        var x1 = parseInt(x.match(/\d+/));
+        document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="resumeRoute(this.id,j)" 
+        style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
+        paused[x1] = true;
+    }
 
+    function resumeRoute(x,j){
+        var x1 = parseInt(x.match(/\d+/));
+        paused[x1] = false;
+        document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="pauseRoute(this.id,j)" 
+        style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
+        startRouteAnimation(agentMarker[x1],x1);
+    }
