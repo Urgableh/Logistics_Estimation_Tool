@@ -349,12 +349,13 @@
 
     //////////////////////////////////
 
-    var autoDriveSteps = new Array();
+    var autoDriveSteps = [];
     var speedFactor = 25; // 10x faster animated drive
+    var animationRenderer = [];
 
-    function setAnimatedRoute(origin, destination, waypts, map) {
+    function setAnimatedRoute(origin, destination, waypts, map, j) {
         // init routing services
-        var directionsRenderer = new google.maps.DirectionsRenderer({
+        animationRenderer[j] = new google.maps.DirectionsRenderer({
             map: map
         });
 
@@ -368,13 +369,13 @@
             function(response, status) {
                 if (status == google.maps.DirectionsStatus.OK) {
                     // display the route
-                    directionsRenderer.setDirections(response);
+                    //animationRenderer[j].setDirections(response);
 
                     // calculate positions for the animation steps
                     // the result is an array of LatLng, stored in autoDriveSteps
-                    autoDriveSteps = [];
+                    autoDriveSteps[j] = new Array()
                     for (i=0 ; i<response.routes[0].legs.length ; i++) {
-                        autoDriveSteps[i] = new Array()
+                        
                         var remainingSeconds = 0;
                         var leg = response.routes[0].legs[i]; // supporting single route, single legs currently
                         leg.steps.forEach(function(step) {
@@ -382,13 +383,13 @@
                             var nextStopSeconds = speedFactor - remainingSeconds;
                             while (nextStopSeconds <= stepSeconds) {
                                 var nextStopLatLng = getPointBetween(step.start_location, step.end_location, nextStopSeconds / stepSeconds);
-                                autoDriveSteps[i].push(nextStopLatLng);
+                                autoDriveSteps[j].push(nextStopLatLng);
                                 nextStopSeconds += speedFactor;
                             }
                             remainingSeconds = stepSeconds + speedFactor - nextStopSeconds;
                         });
                         if (remainingSeconds > 0) {
-                            autoDriveSteps[i].push(leg.end_location);
+                            autoDriveSteps[j].push(leg.end_location);
                         }
                     }
                     
@@ -403,43 +404,49 @@
         return new google.maps.LatLng(a.lat() + (b.lat() - a.lat()) * ratio, a.lng() + (b.lng() - a.lng()) * ratio);
     }
 
+    var autoDriveTimer = []
+    var agentMarker = []
+
     // start the route simulation   
-    function startRouteAnimation(marker) {
-        var i = 0;
-        var autoDriveTimer = setInterval(function () {
+    function startRouteAnimation(marker,j) {
+        autoDriveTimer[j] = setInterval(function () {
                 // stop the timer if the route is finished
-                if (autoDriveSteps[i].length === 0) {
-                    if (i == autoDriveSteps.length-1)
-                        clearInterval(autoDriveTimer);
-                    else
-                        i++;
-                        marker.setPosition(autoDriveSteps[i][0]);
-                        autoDriveSteps[i].shift();
+                if (autoDriveSteps[j].length === 0) {
+                    clearInterval(autoDriveTimer[j]);
+                    // remove path and marker
+                    //animationRenderer[j].setMap(null);
+                    //agentMarker[j].setMap(null);
                 } else {
                     // move marker to the next position (always the first in the array)
-                    marker.setPosition(autoDriveSteps[i][0]);
+                    marker.setPosition(autoDriveSteps[j][0]);
                     // remove the processed position
-                    autoDriveSteps[i].shift();
+                    autoDriveSteps[j].shift();
                 }
             },
             1000);
+        return autoDriveTimer[j];
     }
 
-    
-
-    
 // start simulation on button click...
-    function test(){
+    function startRoute(x,j){
+        var x1 = parseInt(x.match(/\d+/));
+        //renderArray[x1].setMap(null);
+        x = x + '';
+        var regex1 = new RegExp(`<br>((?!<br>).)*${x}.*?<br>`);
+        var regex2 = new RegExp(/(?<=<br>).*(?= \(\d)/);
+        var routeStrings = regex2.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
+        var destinations = routeStrings.split(" =&gt; ");
         var waypts = [];
-        waypts.push({
-            location: "Bull Creek",
-            stopover: true,
-          });
-        waypts.push({
-            location: "Rossmoyne",
-            stopover: true,
-        });
-        var agentMarker = new google.maps.Marker({map});
-        setAnimatedRoute("Booragoon", "Willetton", waypts, map);
-        startRouteAnimation(agentMarker);
+        var start = destinations.shift();
+        var finish = destinations.pop();
+        var wayptCount = destinations.length;
+        for (i=0; i<wayptCount; i++) {
+            waypts.push({
+                location: destinations.shift(),
+                stopover: true,
+            });
+        }
+        agentMarker[j] = new google.maps.Marker({map});
+        setAnimatedRoute(start, finish, waypts, map, j);
+        startRouteAnimation(agentMarker[j],j);
 };

@@ -1,0 +1,19 @@
+{
+  "name": "logistics_estimation_tool",
+  "version": "1.0.0",
+  "description": "What we need: an estimation tool used by dispatch callers to be able to glance at, monitor, input driver positions on a map that covers the general routes we undertake in the Pilbara, W.A.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Urgableh/Logistics_Estimation_Tool.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Urgableh/Logistics_Estimation_Tool/issues"
+  },
+  "homepage": "https://github.com/Urgableh/Logistics_Estimation_Tool#readme"
+}
