@@ -7,6 +7,18 @@
     // 16 Standard Colours for navigation polylines
     var colourArray = ['navy', 'red', 'fuchsia', 'black', 'lime', 'maroon', 'purple', 'aqua', 'grey', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal', 'white'];
 
+    // Get the ball rolling and trigger our init() on 'load'
+    google.maps.event.addDomListener(window, 'load', init);
+
+    // Path simulation global variables
+    var autoDriveSteps = [];
+    var speedFactor = 25; // 25x faster animated drive
+    var animationRenderer = [];
+    var autoDriveTimer = [];
+    var agentMarker = [];
+    var paused = [];
+
+
     function resetInputs(){
         document.getElementById("sortablelist").innerHTML =
         `<div class="list-group-item d-flex align-items-center justify-content-between" data-id="1">
@@ -244,6 +256,7 @@
         document.getElementById("routes").innerHTML = "Routes<br>";
         resetInputs();
     }
+
     function removeRoute(x) {
         var x1 = parseInt(x.match(/\d+/));
         renderArray[x1].setMap(null);
@@ -297,7 +310,6 @@
 
     }
 
-
     // Called Onload
     function init() {
 
@@ -332,14 +344,7 @@
         });
     }
 
-    // Get the ball rolling and trigger our init() on 'load'
-    google.maps.event.addDomListener(window, 'load', init);
-
-    //////////////////////////////////
-
-    var autoDriveSteps = [];
-    var speedFactor = 25; // 25x faster animated drive
-    var animationRenderer = [];
+    ////////////////SIMULATING PATH//////////////////
 
     function setAnimatedRoute(origin, destination, waypts, map, j) {
         // init routing services
@@ -394,10 +399,6 @@
         return new google.maps.LatLng(a.lat() + (b.lat() - a.lat()) * ratio, a.lng() + (b.lng() - a.lng()) * ratio);
     }
 
-    var autoDriveTimer = [];
-    var agentMarker = [];
-    var paused = [];
-
     // start the route simulation   
     function startRouteAnimation(marker,j) {
         autoDriveTimer[j] = setInterval(function () {
@@ -424,7 +425,7 @@
     }
 
     function stopAtWayPoint(marker,j){
-        setTimeout(startRouteAnimation(marker,j), waitAtWaypoint*1000);
+        setTimeout(function() {startRouteAnimation(marker,j)}, waitAtWaypoint*1000);
     }
 
 // start simulation on button click...
@@ -455,7 +456,7 @@
         document.getElementById(`routeStop${x1}`).disabled = false;
         document.getElementById(`routeEdit${x1}`).disabled = true;
         document.getElementById(`routeRemove${x1}`).disabled = true;
-    };
+    }
 
     function stopRoute(x,j){
         var x1 = parseInt(x.match(/\d+/));
