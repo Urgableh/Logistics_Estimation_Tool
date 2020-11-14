@@ -175,8 +175,8 @@
                 //console.log(result)
 
                 var addresses = 0;
-                var timeTaken = 0;
-                var distance = 0;
+                var timeTaken = 0; //in seconds
+                var distance = 0; //in metres
                 
                 for(i=1; i<=inputCount; i++) {
                     if (document.getElementById(`pac-input${i}`).value != ""){
@@ -186,6 +186,9 @@
                 for(i=0; i<addresses-1; i++) {
                     timeTaken += result.routes[0].legs[i].duration.value;
                     distance += result.routes[0].legs[i].distance.value;
+                }
+                for(i=0; i<addresses-2; i++) {
+                    timeTaken += waitAtWaypoint;
                 }
                 
                 var departTime = document.getElementById("departTime").value.split(":");
