@@ -17,7 +17,7 @@
 <script src="main.js"></script>
 
 <!-- Somewhere in the DOM for the map to be rendered -->
-<body>
+<body onload="clock()">
     <div class="sidenav">
         <div class="container">
             <div class="row">
@@ -45,7 +45,7 @@
             <button onclick="removeAll()">Clear All Routes</button>
             <br></a>
             <br>
-            <a>Departure Time: <input type="time" id="departTime"><br><br></a>
+            <a>Departure Time: <input type="time" id="departTime"><b id="clock"></b><br><br></a>
             <p style="text-align: center;"><b>Routes</b></p>
         </div>
         <body><p id="routes"></p>

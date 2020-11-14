@@ -509,3 +509,20 @@
         style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
         startRouteAnimation(agentMarker[x1],x1);
     }
+
+    function clock() {
+        var today = new Date();
+        var h = today.getHours();
+        var m = today.getMinutes();
+        var s = today.getSeconds();
+        m = checkClock(m);
+        s = checkClock(s);
+        document.getElementById('clock').innerHTML =
+        h + ":" + m + ":" + s;
+        var t = setTimeout(clock, 500);
+      }
+
+    function checkClock(i) {
+        if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+        return i;
+    }

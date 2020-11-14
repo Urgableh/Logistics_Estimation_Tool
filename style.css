@@ -36,3 +36,8 @@
 #routes {
     padding-bottom: 20px;
 }
+
+#clock {
+    padding-left: 15px;
+    font-size: small;
+}
