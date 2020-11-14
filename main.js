@@ -199,13 +199,18 @@
                 if (Math.floor(arrivalTime/60/60)%24 >= 10) extra0 = "";
                 if (Math.floor(arrivalTime%3600/60) >= 10) extra00 = "";
                 var arrivalClock = extra0 + Math.floor(arrivalTime/60/60)%24 + ":" + extra00 + Math.floor(arrivalTime%3600/60)
+                var routeLabel = document.getElementById("label").value;
+                if (routeLabel == "") {
+                    routeLabel = j + "";
+                }
 
                 document.getElementById("routes").innerHTML += "<br>" + document.getElementById(`pac-input${order[0]}`).value
                 for(i=2; i<=addresses; i++)
                     document.getElementById("routes").innerHTML += " =&gt; " + document.getElementById(`pac-input${order[i-1]}`).value 
                 document.getElementById("routes").innerHTML += " (" + Math.floor(timeTaken/60/60) + "Hrs " + Math.floor((timeTaken%3600)/60) + "Mins "; //+ Math.floor(timeTaken%60) + "Secs) ";
                 document.getElementById("routes").innerHTML += `- ${Math.round(distance/1000*10)/10}km)`
-                document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock + "]</b></u><pre>\n</pre>";
+                document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock + "]</b></u>";
+                document.getElementById("routes").innerHTML += "<b> " + `{${routeLabel}}</b><pre>\n</pre>`;
                 document.getElementById("routes").innerHTML += "<button id='routeRemove" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeStop" + j + "' onclick='stopRoute(this.id)' style='float: right;'><img src='Stop.png' width='20' height='20'/></button>";
@@ -483,7 +488,10 @@
                 stopover: true,
             });
         }
-        agentMarker[x1] = new google.maps.Marker({map});
+        var regex4 = new RegExp(/(?<=\{)(.*?)(?=\})/);
+        var label = regex4.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
+        label = label.split(",")[0];
+        agentMarker[x1] = new google.maps.Marker({map, label});
         agentMarker[x1].setDraggable(false);
         setAnimatedRoute(start, finish, waypts, map, x1);
         paused[x1] = false;
