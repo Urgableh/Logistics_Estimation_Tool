@@ -176,6 +176,7 @@
 
                 var addresses = 0;
                 var timeTaken = 0;
+                var distance = 0;
                 
                 for(i=1; i<=inputCount; i++) {
                     if (document.getElementById(`pac-input${i}`).value != ""){
@@ -184,6 +185,7 @@
                 }
                 for(i=0; i<addresses-1; i++) {
                     timeTaken += result.routes[0].legs[i].duration.value;
+                    distance += result.routes[0].legs[i].distance.value;
                 }
                 
                 var departTime = document.getElementById("departTime").value.split(":");
@@ -198,7 +200,8 @@
                 document.getElementById("routes").innerHTML += "<br>" + document.getElementById(`pac-input${order[0]}`).value
                 for(i=2; i<=addresses; i++)
                     document.getElementById("routes").innerHTML += " =&gt; " + document.getElementById(`pac-input${order[i-1]}`).value 
-                document.getElementById("routes").innerHTML += " (" + Math.floor(timeTaken/60/60) + "Hrs " + Math.floor((timeTaken%3600)/60) + "Mins) "; //+ Math.floor(timeTaken%60) + "Secs) ";
+                document.getElementById("routes").innerHTML += " (" + Math.floor(timeTaken/60/60) + "Hrs " + Math.floor((timeTaken%3600)/60) + "Mins "; //+ Math.floor(timeTaken%60) + "Secs) ";
+                document.getElementById("routes").innerHTML += `- ${Math.round(distance/1000*10)/10}km)`
                 document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock + "]</b></u><pre>\n</pre>";
                 document.getElementById("routes").innerHTML += "<button id='routeRemove" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button>";
