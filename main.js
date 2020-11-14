@@ -17,6 +17,7 @@
     var autoDriveTimer = [];
     var agentMarker = [];
     var paused = [];
+    var queued = [];
 
 
     function resetInputs(){
@@ -202,7 +203,7 @@
                 document.getElementById("routes").innerHTML += "<button id='routeRemove" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeStop" + j + "' onclick='stopRoute(this.id)' style='float: right;'><img src='Stop.png' width='20' height='20'/></button>";
-                document.getElementById("routes").innerHTML += "<button id='routeStart" + j + `' onclick='startRoute(this.id,${j})' style='float: right;'><img src='Start.png' width='20' height='20'/></button><br>`;
+                document.getElementById("routes").innerHTML += "<button id='routeStart" + j + `' onclick='queueRoute(this.id,${j})' style='float: right;'><img src='Start.png' width='20' height='20'/></button><br>`;
                 
                 document.getElementById(`routeStop${j}`).disabled = true;
 
@@ -485,9 +486,18 @@
 
     function stopRoute(x,j){
         var x1 = parseInt(x.match(/\d+/));
-        clearInterval(autoDriveTimer[x1]);
-        agentMarker[x1].setMap(null);
-        document.getElementById(`routeStart${x1}`).outerHTML = `<button id="routeStart${x1}" onclick="startRoute(this.id,j)" 
+        if (queued[x1]) {
+            clearTimeout(queued[x1]);
+            if (agentMarker[x1]) {
+                clearInterval(autoDriveTimer[x1]);
+                agentMarker[x1].setMap(null);
+            }
+        }
+        else {
+            clearInterval(autoDriveTimer[x1]);
+            agentMarker[x1].setMap(null);
+        }
+        document.getElementById(`routeStart${x1}`).outerHTML = `<button id="routeStart${x1}" onclick="queueRoute(this.id,j)" 
         style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
         document.getElementById(x).disabled = true;
         document.getElementById(`routeEdit${x1}`).disabled = false;
@@ -525,4 +535,26 @@
     function checkClock(i) {
         if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
         return i;
+    }
+
+    function queueRoute(x,j) {
+        var x1 = parseInt(x.match(/\d+/));
+        var now = new Date();
+        var departTime = document.getElementById("departTime").value.split(":")
+        var hour = parseInt(departTime[0]);
+        var min = parseInt(departTime[1]);
+        var millisTillDepart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, min, 0, 0) - now;
+        console.log(millisTillDepart)
+        if (millisTillDepart <= 0) {
+            startRoute(x,j);
+        }
+        else {
+            queued[x1] = setTimeout(function(){startRoute(x,j)}, millisTillDepart);
+            document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="pauseRoute(this.id,j)" 
+                style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
+            document.getElementById(x).disabled = true;
+            document.getElementById(`routeStop${x1}`).disabled = false;
+            document.getElementById(`routeEdit${x1}`).disabled = true;
+            document.getElementById(`routeRemove${x1}`).disabled = true;
+        }
     }
