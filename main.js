@@ -407,7 +407,32 @@
                     // remove path and marker
                     //animationRenderer[j].setMap(null);
                     //agentMarker[j].setMap(null);
-                } else if (autoDriveSteps[j][0] ==("Waypoint!")){
+                } else if (marker.getDraggable()){
+                    var draggedPos = new google.maps.LatLng;
+                    draggedPos = marker.getPosition();
+                    var indexOfClosest = 0;
+                    var distanceOfClosest = 999999;
+                    for (k=0; k< autoDriveSteps[j].length; k++) {
+                        if (autoDriveSteps[j][k] == ("Waypoint!")){
+                            //console.log(autoDriveSteps);
+                        }
+                        else {
+                            var localLat = autoDriveSteps[j][k].lat();
+                            var localLng = autoDriveSteps[j][k].lng();
+                            var distance = Math.pow(Math.pow(draggedPos.lat()-localLat,2)
+                                + Math.pow(draggedPos.lng() - localLng,2),0.5);
+                            if (distance < distanceOfClosest) {
+                                distanceOfClosest = distance;
+                                indexOfClosest = k;
+                            }
+                        }
+                    }
+                    for (k=0; k<indexOfClosest; k++) {
+                        autoDriveSteps[j].shift();
+                    }
+                    marker.setDraggable(false);
+                
+                } else if (autoDriveSteps[j][0] == ("Waypoint!")){
                     autoDriveSteps[j].shift();
                     clearInterval(autoDriveTimer[j]);
                     stopAtWayPoint(marker,j);
@@ -447,6 +472,7 @@
             });
         }
         agentMarker[x1] = new google.maps.Marker({map});
+        agentMarker[x1].setDraggable(false);
         setAnimatedRoute(start, finish, waypts, map, x1);
         paused[x1] = false;
         startRouteAnimation(agentMarker[x1],x1);
@@ -473,6 +499,7 @@
         document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="resumeRoute(this.id,j)" 
         style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
         paused[x1] = true;
+        agentMarker[x1].setDraggable(true);
     }
 
     function resumeRoute(x,j){
