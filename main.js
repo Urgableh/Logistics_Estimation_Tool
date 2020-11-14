@@ -37,7 +37,7 @@
             <input id="pac-input2" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination"><br></p>
         </div>
         </div>`
-
+        document.getElementById("label").value = "";
         order = sortable.toArray();
         var defaultBounds = new google.maps.LatLngBounds(
             new google.maps.LatLng(-32,110),
@@ -290,15 +290,18 @@
         var regex1 = new RegExp(`<br>((?!<br>).)*${x}.*?<br>`);
         var regex2 = new RegExp(/(?<=<br>).*(?= \(\d)/);
         var regex3 = new RegExp(/(?<=<u>\[).*]/);
+        var regex4 = new RegExp(/(?<=\{)(.*?)(?=\})/);
         var routeStrings = regex2.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
         var destinations = routeStrings.split(" =&gt; ");
         var departStrings = regex3.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
+        var label = regex4.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
         //console.log(destinations)
         document.getElementById("routes").innerHTML = document.getElementById("routes").innerHTML.replace(regex1, '');
         resetInputs();
         var temp = departStrings.split(" ");
         document.getElementById("departTime").value = temp[0];
-
+        label = label.split(",")[0];
+        document.getElementById("label").value = label;
         var inputCount = destinations.length;
         for (i=2; i<=inputCount; i++) {
             document.getElementById("sortablelist").innerHTML +=
