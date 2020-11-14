@@ -12,7 +12,7 @@
 
     // Path simulation global variables
     var autoDriveSteps = [];
-    var speedFactor = 1; // 25x faster animated drive
+    var speedFactor = 1; // Ax faster animated drive
     var animationRenderer = [];
     var autoDriveTimer = [];
     var agentMarker = [];
