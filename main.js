@@ -196,8 +196,8 @@
                 var departMin = parseInt(departTime[1], 10);
                 var arrivalTime = departHour*60*60 + departMin*60 + timeTaken;
                 var extra0 = "0", extra00 = "0";
-                if (Math.floor(arrivalTime/60/60)%24 > 10) extra0 = "";
-                if (Math.floor(arrivalTime%3600/60) > 10) extra00 = "";
+                if (Math.floor(arrivalTime/60/60)%24 >= 10) extra0 = "";
+                if (Math.floor(arrivalTime%3600/60) >= 10) extra00 = "";
                 var arrivalClock = extra0 + Math.floor(arrivalTime/60/60)%24 + ":" + extra00 + Math.floor(arrivalTime%3600/60)
 
                 document.getElementById("routes").innerHTML += "<br>" + document.getElementById(`pac-input${order[0]}`).value
@@ -551,7 +551,11 @@
     function queueRoute(x,j) {
         var x1 = parseInt(x.match(/\d+/));
         var now = new Date();
-        var departTime = document.getElementById("departTime").value.split(":")
+        var regex1 = new RegExp(`<br>((?!<br>).)*${x}.*?<br>`);
+        var regex3 = new RegExp(/(?<=<u>\[).*]/);
+        var departStrings = regex3.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
+        var temp = departStrings.split(" ");
+        var departTime = temp[0].split(":")
         var hour = parseInt(departTime[0]);
         var min = parseInt(departTime[1]);
         var millisTillDepart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, min, 0, 0) - now;
