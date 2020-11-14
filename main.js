@@ -277,11 +277,16 @@
         x = x + '';
         var regex1 = new RegExp(`<br>((?!<br>).)*${x}.*?<br>`);
         var regex2 = new RegExp(/(?<=<br>).*(?= \(\d)/);
+        var regex3 = new RegExp(/(?<=<u>\[).*]/);
         var routeStrings = regex2.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
         var destinations = routeStrings.split(" =&gt; ");
+        var departStrings = regex3.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
         //console.log(destinations)
         document.getElementById("routes").innerHTML = document.getElementById("routes").innerHTML.replace(regex1, '');
         resetInputs();
+        var temp = departStrings.split(" ");
+        document.getElementById("departTime").value = temp[0];
+
         var inputCount = destinations.length;
         for (i=2; i<=inputCount; i++) {
             document.getElementById("sortablelist").innerHTML +=
@@ -386,7 +391,7 @@
                         }
                         autoDriveSteps[j].push("Waypoint!");
                     }
-                    console.log(autoDriveSteps)
+                    //console.log(autoDriveSteps)
                     
                 } else {
                     window.alert('Directions request failed due to ' + status);
@@ -544,7 +549,6 @@
         var hour = parseInt(departTime[0]);
         var min = parseInt(departTime[1]);
         var millisTillDepart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, min, 0, 0) - now;
-        console.log(millisTillDepart)
         if (millisTillDepart <= 0) {
             startRoute(x,j);
         }
