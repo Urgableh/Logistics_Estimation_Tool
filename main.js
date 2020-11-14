@@ -2,7 +2,7 @@
     var directionsService = new google.maps.DirectionsService();
     var num, map, data, j=0;
     var requestArray = [], renderArray = [];
-    var waitAtWaypoint = 10; // seconds
+    var waitAtWaypoint = 15*60; // seconds
 
     // 16 Standard Colours for navigation polylines
     var colourArray = ['navy', 'red', 'fuchsia', 'black', 'orange', 'maroon', 'purple', 'aqua', 'coral', 'green', 'indigo', 'olive', 'blue', 'plum', 'teal', 'brown'];
@@ -12,7 +12,7 @@
 
     // Path simulation global variables
     var autoDriveSteps = [];
-    var speedFactor = 25; // 25x faster animated drive
+    var speedFactor = 1; // 25x faster animated drive
     var animationRenderer = [];
     var autoDriveTimer = [];
     var agentMarker = [];
