@@ -18,6 +18,7 @@
     var agentMarker = [];
     var paused = [];
     var queued = [];
+    var infoWindows = [];
 
 
     function resetInputs(){
@@ -496,6 +497,13 @@
         setAnimatedRoute(start, finish, waypts, map, x1);
         paused[x1] = false;
         startRouteAnimation(agentMarker[x1],x1);
+
+        var contentString = routeStrings.replaceAll(" =&gt; ","<br> =&gt; ");
+        infoWindows[x1] = new google.maps.InfoWindow({content: contentString});
+        agentMarker[x1].addListener("click", () => {
+            infoWindows[x1].open(map, agentMarker[x1])
+        })
+
         document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="pauseRoute(this.id,j)" 
             style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
         document.getElementById(`routeStop${x1}`).disabled = false;
