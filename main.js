@@ -524,6 +524,8 @@
 
         document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="pauseRoute(this.id,j)" 
             style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
+        document.getElementById(x).disabled = true;
+        setTimeout(function (){document.getElementById(x).disabled = false;}, 1500);
         document.getElementById(`routeStop${x1}`).disabled = false;
         document.getElementById(`routeEdit${x1}`).disabled = true;
         document.getElementById(`routeRemove${x1}`).disabled = true;
