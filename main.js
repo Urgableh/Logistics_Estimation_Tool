@@ -178,39 +178,50 @@
                 var addresses = 0;
                 var timeTaken = 0; //in seconds
                 var distance = 0; //in metres
-                
+                var timeTakenAtWaypoint = [];
+
                 for(i=1; i<=inputCount; i++) {
                     if (document.getElementById(`pac-input${i}`).value != ""){
                         addresses ++;
                     }
                 }
+                timeTakenAtWaypoint[0] = 0;
+
                 for(i=0; i<addresses-1; i++) {
                     timeTaken += result.routes[0].legs[i].duration.value;
                     distance += result.routes[0].legs[i].distance.value;
+                    timeTakenAtWaypoint[i+1] = result.routes[0].legs[i].duration.value;
                 }
                 for(i=0; i<addresses-2; i++) {
                     timeTaken += waitAtWaypoint;
+                }
+                for(i=2; i<addresses; i++) {
+                    timeTakenAtWaypoint[i] = timeTakenAtWaypoint[i] + waitAtWaypoint;
+                    timeTakenAtWaypoint[i] += timeTakenAtWaypoint[i-1];
                 }
                 
                 var departTime = document.getElementById("departTime").value.split(":");
                 var departHour = parseInt(departTime[0], 10);
                 var departMin = parseInt(departTime[1], 10);
-                var arrivalTime = departHour*60*60 + departMin*60 + timeTaken;
-                var extra0 = "0", extra00 = "0";
-                if (Math.floor(arrivalTime/60/60)%24 >= 10) extra0 = "";
-                if (Math.floor(arrivalTime%3600/60) >= 10) extra00 = "";
-                var arrivalClock = extra0 + Math.floor(arrivalTime/60/60)%24 + ":" + extra00 + Math.floor(arrivalTime%3600/60)
+                var arrivalClock = []
+                for (i=0; i<addresses; i++) {
+                    var arrivalTime = departHour*60*60 + departMin*60 + timeTakenAtWaypoint[i];
+                    var extra0 = "0", extra00 = "0";
+                    if (Math.floor(arrivalTime/60/60)%24 >= 10) extra0 = "";
+                    if (Math.floor(arrivalTime%3600/60) >= 10) extra00 = "";
+                    arrivalClock[i] = extra0 + Math.floor(arrivalTime/60/60)%24 + ":" + extra00 + Math.floor(arrivalTime%3600/60)
+                }
                 var routeLabel = document.getElementById("label").value;
                 if (routeLabel == "") {
                     routeLabel = j + "";
                 }
 
-                document.getElementById("routes").innerHTML += "<br>" + document.getElementById(`pac-input${order[0]}`).value
+                document.getElementById("routes").innerHTML += "<br>" + document.getElementById(`pac-input${order[0]}`).value + ` <sup>${document.getElementById("departTime").value}</sup>`;
                 for(i=2; i<=addresses; i++)
-                    document.getElementById("routes").innerHTML += " =&gt; " + document.getElementById(`pac-input${order[i-1]}`).value 
+                    document.getElementById("routes").innerHTML += " =&gt; " + document.getElementById(`pac-input${order[i-1]}`).value  + ` <sup>${arrivalClock[i-1]}</sup>`
                 document.getElementById("routes").innerHTML += " (" + Math.floor(timeTaken/60/60) + "Hrs " + Math.floor((timeTaken%3600)/60) + "Mins "; //+ Math.floor(timeTaken%60) + "Secs) ";
                 document.getElementById("routes").innerHTML += `- ${Math.round(distance/1000*10)/10}km)`
-                document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock + "]</b></u>";
+                document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock[addresses-1] + "]</b></u>";
                 document.getElementById("routes").innerHTML += "<b> " + `{${routeLabel}}</b><pre>\n</pre>`;
                 document.getElementById("routes").innerHTML += "<button id='routeRemove" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
                 document.getElementById("routes").innerHTML += "<button id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button>";
@@ -292,6 +303,7 @@
         var regex3 = new RegExp(/(?<=<u>\[).*]/);
         var regex4 = new RegExp(/(?<=\{)(.*?)(?=\})/);
         var routeStrings = regex2.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
+        routeStrings = routeStrings.replace(/ <sup>\d\d:\d\d<\/sup>/g,"")
         var destinations = routeStrings.split(" =&gt; ");
         var departStrings = regex3.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
         var label = regex4.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
@@ -480,7 +492,9 @@
         x = x + '';
         var regex1 = new RegExp(`<br>((?!<br>).)*${x}.*?<br>`);
         var regex2 = new RegExp(/(?<=<br>).*(?= \(\d)/);
+        var regex5 = new RegExp(" <sup>\d\d:\d\d<\/sup>","g")
         var routeStrings = regex2.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
+        routeStrings = routeStrings.replace(/ <sup>\d\d:\d\d<\/sup>/g,"")
         var destinations = routeStrings.split(" =&gt; ");
         var waypts = [];
         var start = destinations.shift();
@@ -501,6 +515,7 @@
         paused[x1] = false;
         startRouteAnimation(agentMarker[x1],x1);
 
+        routeStrings = regex2.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
         var contentString = routeStrings.replaceAll(" =&gt; ","<br> =&gt; ");
         infoWindows[x1] = new google.maps.InfoWindow({content: contentString});
         agentMarker[x1].addListener("click", () => {
