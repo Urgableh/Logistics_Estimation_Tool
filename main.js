@@ -210,10 +210,12 @@
 
                 var arrivalClock = []
                 var arrivalTime;
+                var pastMidnight = [];
                 for (i=0; i<addresses; i++) {
                     arrivalTime = departHour*60*60 + departMin*60 + timeTakenAtWaypoint[i];
                     arrivalTime = arrivalTime + Math.floor(timeTakenAtWaypoint[i] / breakEvery)*breakDuration;
                     var extra0 = "0", extra00 = "0";
+                    if ((arrivalTime/60/60)/24 > 1) pastMidnight[i] = ["<mark>","</mark>"]; else pastMidnight[i] = ["",""];
                     if (Math.floor(arrivalTime/60/60)%24 >= 10) extra0 = "";
                     if (Math.floor(arrivalTime%3600/60) >= 10) extra00 = "";
                     arrivalClock[i] = extra0 + Math.floor(arrivalTime/60/60)%24 + ":" + extra00 + Math.floor(arrivalTime%3600/60)
@@ -225,7 +227,7 @@
 
                 document.getElementById("routes").innerHTML += "<br>" + document.getElementById(`pac-input${order[0]}`).value + ` <sup>${document.getElementById("departTime").value}</sup>`;
                 for(i=2; i<=addresses; i++)
-                    document.getElementById("routes").innerHTML += " =&gt; " + document.getElementById(`pac-input${order[i-1]}`).value  + ` <sup>${arrivalClock[i-1]}</sup>`
+                    document.getElementById("routes").innerHTML += " =&gt; " + document.getElementById(`pac-input${order[i-1]}`).value  + ` <sup>${pastMidnight[i-1][0]}${arrivalClock[i-1]}${pastMidnight[i-1][1]}</sup>`
                 document.getElementById("routes").innerHTML += " (" + Math.floor((arrivalTime-(departHour*60*60 + departMin*60))/60/60) + "Hrs " + Math.floor(((arrivalTime-(departHour*60*60 + departMin*60))%3600)/60) + "Mins ";
                 document.getElementById("routes").innerHTML += `- ${Math.round(distance/1000*10)/10}km)`
                 document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock[addresses-1] + "]</b></u>";
@@ -310,7 +312,7 @@
         var regex3 = new RegExp(/(?<=<u>\[).*]/);
         var regex4 = new RegExp(/(?<=\{)(.*?)(?=\})/);
         var routeStrings = regex2.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
-        routeStrings = routeStrings.replace(/ <sup>\d\d:\d\d<\/sup>/g,"")
+        routeStrings = routeStrings.replace(/ <sup>(<mark>)*\d\d:\d\d(<\/mark>)*<\/sup>/g,"")
         var destinations = routeStrings.split(" =&gt; ");
         var departStrings = regex3.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
         var label = regex4.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
@@ -515,9 +517,8 @@
         x = x + '';
         var regex1 = new RegExp(`<br>((?!<br>).)*${x}.*?<br>`);
         var regex2 = new RegExp(/(?<=<br>).*(?= \(\d)/);
-        var regex5 = new RegExp(" <sup>\d\d:\d\d<\/sup>","g")
         var routeStrings = regex2.exec(regex1.exec(document.getElementById("routes").innerHTML)) + "";
-        routeStrings = routeStrings.replace(/ <sup>\d\d:\d\d<\/sup>/g,"")
+        routeStrings = routeStrings.replace(/ <sup>(<mark>)*\d\d:\d\d(<\/mark>)*<\/sup>/g,"")
         var destinations = routeStrings.split(" =&gt; ");
         var waypts = [];
         var start = destinations.shift();
