@@ -31,14 +31,14 @@
         <div>
         <p class="mb-0 d-inline-flex align-items-center">
             Address<br>
-            <input id="pac-input1" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination"><br></p>
+            <input id="pac-input1" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination..."><br></p>
         </div>
         </div>
         <div class="list-group-item d-flex align-items-center justify-content-between" data-id="2">
         <div>
         <p class="mb-0 d-inline-flex align-items-center">
             Address<br>
-            <input id="pac-input2" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination"><br></p>
+            <input id="pac-input2" size="30" class="controls" type="text" onchange="addInputs()" placeholder="Start typing here to add destination..."><br></p>
         </div>
         </div>`
         document.getElementById("label").value = "";
