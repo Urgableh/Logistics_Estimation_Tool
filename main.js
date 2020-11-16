@@ -580,6 +580,9 @@
         style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
         paused[x1] = true;
         agentMarker[x1].setDraggable(true);
+        clearInterval(autoDriveTimer[x1]);
+        clearTimeout(stopForBreakTimeout[x1]);
+        clearTimeout(stopAtWayPointTimeout[x1]);
     }
 
     function resumeRoute(x,j){
@@ -587,8 +590,6 @@
         paused[x1] = false;
         document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="pauseRoute(this.id,j)" 
         style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
-        clearTimeout(stopForBreakTimeout[x1]);
-        clearTimeout(stopAtWayPointTimeout[x1]);
         startRouteAnimation(agentMarker[x1],x1);
     }
 
