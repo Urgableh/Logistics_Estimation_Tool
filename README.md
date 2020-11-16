@@ -2,6 +2,8 @@
 
 An estimation tool used by dispatch callers to be able to glance at, monitor, input driver positions on a map that covers the general routes.
 
+![demo](/guide-images/demo.gif)
+
 ## User Interface
 
 ![UI](/guide-images/UI.png)
