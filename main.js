@@ -339,7 +339,7 @@
         var options = {bounds: defaultBounds};
         var inputX = {};
 
-        for (i=2; i<=inputCount; i++) {
+        for (i=0; i<=inputCount; i++) {
             inputX[i] = document.getElementById(`pac-input${order[i]}`);
             var autocomplete = new google.maps.places.Autocomplete(inputX[i], options)
         }
