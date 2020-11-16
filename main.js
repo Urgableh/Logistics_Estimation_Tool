@@ -402,7 +402,7 @@
                 if (status == google.maps.DirectionsStatus.OK) {
                     // display the route - this will zoom into the map too
                     //animationRenderer[j].setDirections(response);
-
+                    map.panTo(response.routes[0].legs[0].steps[0].start_location);
                     // calculate positions for the animation steps
                     // the result is an array of LatLng, stored in autoDriveSteps
                     autoDriveSteps[j] = new Array()
