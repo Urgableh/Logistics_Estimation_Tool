@@ -2,7 +2,9 @@
     var directionsService = new google.maps.DirectionsService();
     var num, map, data, j=0;
     var requestArray = [], renderArray = [];
-    var waitAtWaypoint = 15*60; // seconds
+    var waitAtWaypoint = 15*60; // 15 minutes
+    var breakEvery = 5*60*60; // break every 5 hours for...
+    var breakDuration = 30*60; // 30 minutes
 
     // 16 Standard Colours for navigation polylines
     var colourArray = ['navy', 'red', 'fuchsia', 'black', 'orange', 'maroon', 'purple', 'aqua', 'coral', 'green', 'indigo', 'olive', 'blue', 'plum', 'teal', 'brown'];
@@ -12,13 +14,15 @@
 
     // Path simulation global variables
     var autoDriveSteps = [];
-    var speedFactor = 1; // Ax faster animated drive
+    var speedFactor = 1; // Ax faster animated drive (altering this will mess with timer functionality)
     var animationRenderer = [];
     var autoDriveTimer = [];
     var agentMarker = [];
     var paused = [];
     var queued = [];
     var infoWindows = [];
+    var stopAtWayPointTimeout = [];
+    var stopForBreakTimeout = [];
 
 
     function resetInputs(){
@@ -203,9 +207,12 @@
                 var departTime = document.getElementById("departTime").value.split(":");
                 var departHour = parseInt(departTime[0], 10);
                 var departMin = parseInt(departTime[1], 10);
+
                 var arrivalClock = []
+                var arrivalTime;
                 for (i=0; i<addresses; i++) {
-                    var arrivalTime = departHour*60*60 + departMin*60 + timeTakenAtWaypoint[i];
+                    arrivalTime = departHour*60*60 + departMin*60 + timeTakenAtWaypoint[i];
+                    arrivalTime = arrivalTime + Math.floor(timeTakenAtWaypoint[i] / breakEvery)*breakDuration;
                     var extra0 = "0", extra00 = "0";
                     if (Math.floor(arrivalTime/60/60)%24 >= 10) extra0 = "";
                     if (Math.floor(arrivalTime%3600/60) >= 10) extra00 = "";
@@ -219,7 +226,7 @@
                 document.getElementById("routes").innerHTML += "<br>" + document.getElementById(`pac-input${order[0]}`).value + ` <sup>${document.getElementById("departTime").value}</sup>`;
                 for(i=2; i<=addresses; i++)
                     document.getElementById("routes").innerHTML += " =&gt; " + document.getElementById(`pac-input${order[i-1]}`).value  + ` <sup>${arrivalClock[i-1]}</sup>`
-                document.getElementById("routes").innerHTML += " (" + Math.floor(timeTaken/60/60) + "Hrs " + Math.floor((timeTaken%3600)/60) + "Mins "; //+ Math.floor(timeTaken%60) + "Secs) ";
+                document.getElementById("routes").innerHTML += " (" + Math.floor((arrivalTime-(departHour*60*60 + departMin*60))/60/60) + "Hrs " + Math.floor(((arrivalTime-(departHour*60*60 + departMin*60))%3600)/60) + "Mins ";
                 document.getElementById("routes").innerHTML += `- ${Math.round(distance/1000*10)/10}km)`
                 document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock[addresses-1] + "]</b></u>";
                 document.getElementById("routes").innerHTML += "<b> " + `{${routeLabel}}</b><pre>\n</pre>`;
@@ -400,7 +407,7 @@
                     // the result is an array of LatLng, stored in autoDriveSteps
                     autoDriveSteps[j] = new Array()
                     for (i=0 ; i<response.routes[0].legs.length ; i++) {
-                        
+                        var totalTime = 0; // in seconds considering each point is 1s long
                         var remainingSeconds = 0;
                         var leg = response.routes[0].legs[i]; // supporting single route, single legs currently
                         leg.steps.forEach(function(step) {
@@ -408,8 +415,12 @@
                             var nextStopSeconds = speedFactor - remainingSeconds;
                             while (nextStopSeconds <= stepSeconds) {
                                 var nextStopLatLng = getPointBetween(step.start_location, step.end_location, nextStopSeconds / stepSeconds);
+                                if (totalTime % breakEvery === 0 && totalTime != 0) {
+                                    autoDriveSteps[j].push("Break!");
+                                }
                                 autoDriveSteps[j].push(nextStopLatLng);
                                 nextStopSeconds += speedFactor;
+                                totalTime++;
                             }
                             remainingSeconds = stepSeconds + speedFactor - nextStopSeconds;
                         });
@@ -417,6 +428,7 @@
                             autoDriveSteps[j].push(leg.end_location);
                         }
                         autoDriveSteps[j].push("Waypoint!");
+                        totalTime = totalTime + waitAtWaypoint;
                     }
                     //console.log(autoDriveSteps)
                     
@@ -449,6 +461,9 @@
                         if (autoDriveSteps[j][k] == ("Waypoint!")){
                             //console.log(autoDriveSteps);
                         }
+                        else if (autoDriveSteps[j][k] == ("Break!")){
+                            //console.log(autoDriveSteps);
+                        }
                         else {
                             var localLat = autoDriveSteps[j][k].lat();
                             var localLng = autoDriveSteps[j][k].lng();
@@ -469,6 +484,10 @@
                     autoDriveSteps[j].shift();
                     clearInterval(autoDriveTimer[j]);
                     stopAtWayPoint(marker,j);
+                } else if (autoDriveSteps[j][0] == ("Break!")){
+                    autoDriveSteps[j].shift();
+                    clearInterval(autoDriveTimer[j]);
+                    stopForBreak(marker,j);
                 }
                 else  {
                     // move marker to the next position (always the first in the array)
@@ -482,7 +501,11 @@
     }
 
     function stopAtWayPoint(marker,j){
-        setTimeout(function() {startRouteAnimation(marker,j)}, waitAtWaypoint*1000);
+        stopAtWayPointTimeout[j] = setTimeout(function() {startRouteAnimation(marker,j)}, waitAtWaypoint*1000);
+    }
+
+    function stopForBreak(marker,j){
+        stopForBreakTimeout[j] = setTimeout(function() {startRouteAnimation(marker,j)}, breakDuration*1000);
     }
 
 // start simulation on button click...
@@ -564,6 +587,8 @@
         paused[x1] = false;
         document.getElementById(x).outerHTML = `<button id="routeStart${x1}" onclick="pauseRoute(this.id,j)" 
         style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
+        clearTimeout(stopForBreakTimeout[x1]);
+        clearTimeout(stopAtWayPointTimeout[x1]);
         startRouteAnimation(agentMarker[x1],x1);
     }
 
