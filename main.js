@@ -267,6 +267,7 @@
 
                 // Use this new renderer with the result
                 renderArray[j].setDirections(result);
+                map.panTo(result.routes[0].legs[0].steps[0].start_location);
                 resetInputs();
                 // and start the next request
                 j++;
