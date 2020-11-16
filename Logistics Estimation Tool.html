@@ -1,12 +1,3 @@
-<!-- 
-    IDEA: Sliding bar to show progress from 0 - 100% of journey 
-    Start with 2 addresses, 
-    Iteratively add more addresses if there are no extra blank addresses (onchange event)
-    After hitting Calculate, remove all inputs and revert back to 2 addresses
-    Add an edit button to the route to auto plug back into the inputs
-    Have edit symbol and exit symbol imported pngs
--->
-
 <!-- Load the Google Maps aPI -->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBV-QwkbjRjPoaIxsdQeVNZ8QZvdV8xYWw&libraries=places"></script>
 
@@ -14,7 +5,7 @@
 <script type="module" src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <!-- All of the script for multiple requests -->
-<script src="main.js"></script>
+<script src="data/main.js"></script>
 
 <!-- Somewhere in the DOM for the map to be rendered -->
 <body onload="clock()">
@@ -54,4 +45,4 @@
     <div id="map-canvas"></div>
 </body>
 
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="data/style.css">

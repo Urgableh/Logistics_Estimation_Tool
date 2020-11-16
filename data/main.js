@@ -232,10 +232,10 @@
                 document.getElementById("routes").innerHTML += `- ${Math.round(distance/1000*10)/10}km)`
                 document.getElementById("routes").innerHTML += " <b><u>[" + document.getElementById("departTime").value + " &#8594 " + arrivalClock[addresses-1] + "]</b></u>";
                 document.getElementById("routes").innerHTML += "<b> " + `{${routeLabel}}</b><pre>\n</pre>`;
-                document.getElementById("routes").innerHTML += "<button title='Remove' id='routeRemove" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='Bin.png' width='20' height='20'/></button>";
-                document.getElementById("routes").innerHTML += "<button title='Edit' id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='Pencil.png' width='20' height='20'/></button>";
-                document.getElementById("routes").innerHTML += "<button title='Stop' id='routeStop" + j + "' onclick='stopRoute(this.id)' style='float: right;'><img src='Stop.png' width='20' height='20'/></button>";
-                document.getElementById("routes").innerHTML += "<button title='Dispatch' id='routeStart" + j + `' onclick='queueRoute(this.id,${j})' style='float: right;'><img src='Start.png' width='20' height='20'/></button><br>`;
+                document.getElementById("routes").innerHTML += "<button title='Remove' id='routeRemove" + j + "' onclick='removeRoute(this.id)' style='float: right;'><img src='button-images/Bin.png' width='20' height='20'/></button>";
+                document.getElementById("routes").innerHTML += "<button title='Edit' id='routeEdit" + j + "' onclick='editRoute(this.id)' style='float: right;'><img src='button-images/Pencil.png' width='20' height='20'/></button>";
+                document.getElementById("routes").innerHTML += "<button title='Stop' id='routeStop" + j + "' onclick='stopRoute(this.id)' style='float: right;'><img src='button-images/Stop.png' width='20' height='20'/></button>";
+                document.getElementById("routes").innerHTML += "<button title='Dispatch' id='routeStart" + j + `' onclick='queueRoute(this.id,${j})' style='float: right;'><img src='button-images/Start.png' width='20' height='20'/></button><br>`;
                 
                 document.getElementById(`routeStop${j}`).disabled = true;
 
@@ -548,7 +548,7 @@
         })
 
         document.getElementById(x).outerHTML = `<button title='Pause' id="routeStart${x1}" onclick="pauseRoute(this.id,j)" 
-            style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
+            style="float: right;"><img src="button-images/Pause.png" width="20" height="20"></button>`;
         document.getElementById(x).disabled = true;
         setTimeout(function (){document.getElementById(x).disabled = false;}, 1500);
         document.getElementById(`routeStop${x1}`).disabled = false;
@@ -570,7 +570,7 @@
             agentMarker[x1].setMap(null);
         }
         document.getElementById(`routeStart${x1}`).outerHTML = `<button title='Dispatch' id="routeStart${x1}" onclick="queueRoute(this.id,j)" 
-        style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
+        style="float: right;"><img src="button-images/Start.png" width="20" height="20"></button>`;
         document.getElementById(x).disabled = true;
         document.getElementById(`routeEdit${x1}`).disabled = false;
         document.getElementById(`routeRemove${x1}`).disabled = false;
@@ -579,7 +579,7 @@
     function pauseRoute(x,j){
         var x1 = parseInt(x.match(/\d+/));
         document.getElementById(x).outerHTML = `<button title='Dispatch' id="routeStart${x1}" onclick="resumeRoute(this.id,j)" 
-        style="float: right;"><img src="Start.png" width="20" height="20"></button>`;
+        style="float: right;"><img src="button-images/Start.png" width="20" height="20"></button>`;
         paused[x1] = true;
         agentMarker[x1].setDraggable(true);
         clearInterval(autoDriveTimer[x1]);
@@ -591,7 +591,7 @@
         var x1 = parseInt(x.match(/\d+/));
         paused[x1] = false;
         document.getElementById(x).outerHTML = `<button title='Pause' id="routeStart${x1}" onclick="pauseRoute(this.id,j)" 
-        style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
+        style="float: right;"><img src="button-images/Pause.png" width="20" height="20"></button>`;
         startRouteAnimation(agentMarker[x1],x1);
     }
 
@@ -629,7 +629,7 @@
         else {
             queued[x1] = setTimeout(function(){startRoute(x,j)}, millisTillDepart);
             document.getElementById(x).outerHTML = `<button title='Pause' id="routeStart${x1}" onclick="pauseRoute(this.id,j)" 
-                style="float: right;"><img src="Pause.png" width="20" height="20"></button>`;
+                style="float: right;"><img src="button-images/Pause.png" width="20" height="20"></button>`;
             document.getElementById(x).disabled = true;
             document.getElementById(`routeStop${x1}`).disabled = false;
             document.getElementById(`routeEdit${x1}`).disabled = true;
