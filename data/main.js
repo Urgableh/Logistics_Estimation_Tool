@@ -94,6 +94,7 @@
 
     function readRequests(){
         
+        calculateDelay()       
         var order = sortable.toArray();
         
         var inputCount = document.getElementById("sortablelist").innerHTML.split("pac-input").length - 1;
@@ -351,6 +352,12 @@
         }
 
     }
+
+    function calculateDelay() {
+        document.getElementById("Calculate").disabled = true;
+        setTimeout(function() {document.getElementById("Calculate").disabled = false;},1000);
+    }
+
 
     // Called Onload
     function init() {
