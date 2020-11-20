@@ -63,16 +63,20 @@ All wall clock destination times include these delays.
 
 **I can't drag the marker backwards.**
 
-When paused, the marker can be dragged to any future point in the path. In order to drag the marker backwards, follow these steps: Stop -> Start -> Pause -> Drag -> Start.
+> When paused, the marker can be dragged to any future point in the path. In order to drag the marker backwards, follow these steps: Stop -> Start -> Pause -> Drag -> Start.
 
 **The marker is not snapping to the road.**
 
-Google Directions API returns a discrete set of instructions to navigate the roads. These include instructions to turn at various intersections, and lack the interim instructions when travelling forward on a long road. Due to these lack of instructions, fewer anchoring coordinates can be mapped to the simulated path resulting in less accurate pathing. Regardless, all timing is accurate.
+> Google Directions API returns a discrete set of instructions to navigate the roads. These include instructions to turn at various intersections, and lack the interim instructions when travelling forward on a long road. Due to these lack of instructions, fewer anchoring coordinates can be mapped to the simulated path resulting in less accurate pathing. Regardless, all timing is accurate.
 
 **How do I keep tracking the position of a single marker?**
 
-Clicking on the marker and showing its Info Window will ensure the marker is always on screen. (Note this will *not* centre the marker at all times).
+> Clicking on the marker and showing its Info Window will ensure the marker is always on screen. (Note this will *not* centre the marker at all times).
 
 **This page can't load Google Maps correctly.**
 
-The Google API Key has expired on the developer's end. Provide your own API key or contact the developer.
+> The Google API Key has expired on the developer's end. Provide your own API key or contact the developer.
+
+**I'm pressing Calculate, but nothing is happening.**
+
+> It is likely that the given destinations cannot be reached in a single path via Google recognised roads. To check this is the case, right click and inspect element. "Directions request returned no results." appearing in the console will confirm this.
